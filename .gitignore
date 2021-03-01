@@ -1,0 +1,17 @@
+*.o
+*.out
+*.d
+*.dSYM
+main
+
+# Visual studio code
+.vscode
+launch.json
+
+# Mac
+.DS_Store 
+
+# CLion
+.idea/
+CMakeLists.txt
+cmake-build-debug/
