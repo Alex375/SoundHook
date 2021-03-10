@@ -2,8 +2,6 @@
 
 >Sound processing project for Epita S4
 
-
-
 -------
 
 ## Tasks
@@ -16,7 +14,7 @@
 | Recomposition du son avec traitment |   ++   |   +   |           |
 | I/O                                 |   ++   |       |     +     |
 | Interface graphique                 |   +    |       |    ++     |
-
+| Site Web                            |   ++   |       |           |
 
 ## Planning
 
@@ -28,5 +26,4 @@
 | Recomposition du son avec traitment | [---] | [++-] | [+++] |
 | I/O                                 | [+--] | [++-] | [+++] |
 | Interface graphique                 | [---] | [+--] | [+++] |
-
-
+| Site Web                            | [++-] | [+++] | [+++] |
