@@ -21,7 +21,9 @@ struct WavHeader
     unsigned int bits_per_sample;               // bits per sample, 8- 8bits, 16- 16 bits etc
     unsigned char data_chunk_header [4];        // DATA string or FLLR string
     unsigned int data_size;                     // NumSamples * NumChannels * BitsPerSample/8 - size of the next chunk that will be read
+    unsigned long num_of_sample;                         // Number of sample
 };
 
 
 #endif //SOUNDHOOK_WAV_H
+

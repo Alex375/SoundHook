@@ -5,5 +5,5 @@
 
 int main()
 {
-    printf("Hello Bitch");
+    printf("%zu", sizeof (unsigned int));
 }
