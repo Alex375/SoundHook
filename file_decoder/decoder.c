@@ -67,7 +67,6 @@ WavHeader* decodeWavHeader(FILE* f)
     status = fread(buff4, sizeof (char) * 4, 1, f);
     header->data_size = littleEndianToBigEndian4(buff4);
 
-    fclose(f);
     return header;
 }
 
@@ -145,7 +144,7 @@ int checkHeader(WavHeader* header, FILE* f)
     long byte_in_channel = sample_size / header->channels;
     if(byte_in_channel * header->channels != sample_size)
     {
-        printf("Sample size error.");
+        printf("Sample size error.\n");
         return 5;
     }
     long low_limit = 0;
@@ -164,7 +163,7 @@ int checkHeader(WavHeader* header, FILE* f)
             high_limit = 2147483647;
             break;
         default:
-            printf("Bit per sample error.");
+            printf("Bit per sample error.\n");
             return 6;
     }
 
@@ -175,10 +174,39 @@ int checkHeader(WavHeader* header, FILE* f)
         status = fread(data_buffer, sizeof (char) * sample_size, 1, f);
         if (status != 1)
         {
-            printf("Error while reading data.");
+            printf("Error while reading data.\n");
             return 7;
         }
-        //Read data for each channels
+
+        for (unsigned int chan = 0; chan < header->channels; chan++)
+        {
+            int data = 0;
+            switch (byte_in_channel) {
+                case 1:
+                    data = data_buffer[chan * byte_in_channel] & 0x00ff;
+                    data -= 128;
+                    break;
+                case 2:
+                    data = (data_buffer[chan * byte_in_channel] & 0x00ff) |
+                            (data_buffer[chan * byte_in_channel + 1]<<8);
+                    break;
+                case 4:
+                    data = (data_buffer[chan * byte_in_channel] & 0x00ff) |
+                            (data_buffer[chan * byte_in_channel + 1] & 0x00ff << 8) |
+                            (data_buffer[chan * byte_in_channel + 2] & 0x00ff << 16) |
+                            (data_buffer[chan * byte_in_channel + 3] & 0x00ff << 24);
+                    break;
+                default:
+                    err(1, "Byte in channel error");
+            }
+            if (data < low_limit || data > high_limit)
+            {
+                printf("Value out of range at sample %lu, channel %i\n", i, chan);
+                return 8;
+            }
+            printf("Data sample %lu chan %u ->  %f  -> %i\n", i, chan, (float)(data) / high_limit, data);
+
+        }
     }
 
     return 0;

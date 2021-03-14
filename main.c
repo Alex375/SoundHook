@@ -5,5 +5,11 @@
 
 int main()
 {
-    printf("%zu", sizeof (unsigned int));
+    char c = 205;
+
+    printf("Signed -> %x %x\n", c, c & 0x00ff);
+
+    unsigned char uc = 205;
+
+    printf("Unsigned -> %x %x", uc, uc & 0x00ff);
 }
