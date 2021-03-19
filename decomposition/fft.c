@@ -1,8 +1,32 @@
+<<<<<<< Updated upstream
 //
 // Created by Noé Bonne on 3/11/21.
 //
 // FAST FOURIER TRANSFORM
 // Exemple de la FFT sur la fonction f(x) = x*(1-x)
+=======
+#include <stdio.h>
+#include "/usr/local/Cellar/fftw/3.3.9/include/fftw3.h"
+
+
+
+// fft init
+// real numbers in
+int fft()
+{
+    int buffer_size = 16;
+
+    double * in  = (double*)fftw_malloc(sizeof(double) * buffer_size);
+    int n_out = ((buffer_size/2)+1);
+// complex numbers out
+    fftw_complex* out = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * n_out);
+    int current_entry = 0;
+    int filled = 0;
+
+    printf("ffting");
+    return 0;
+}
+>>>>>>> Stashed changes
 
 #include <stdio.h>
 #include <stdlib.h>
