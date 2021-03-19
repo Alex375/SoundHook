@@ -7,7 +7,7 @@
 
 int main()
 {
-    FILE* f = openFile("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sinusoid.wav");
+    FILE* f = openFile("/Users/bozecaurore/Desktop/#EPITA/S4/PROJET/SoundHook/file_decoder/square.wav");
     WavHeader * header = decodeWavHeader(f);
     printf("%i\n", checkHeader(header, f));
     printWavHeader(header);
