@@ -1,10 +1,10 @@
-<<<<<<< Updated upstream
+
 //
 // Created by Noé Bonne on 3/11/21.
 //
 // FAST FOURIER TRANSFORM
 // Exemple de la FFT sur la fonction f(x) = x*(1-x)
-=======
+
 #include <stdio.h>
 #include "/usr/local/Cellar/fftw/3.3.9/include/fftw3.h"
 
@@ -26,7 +26,7 @@ int fft()
     printf("ffting");
     return 0;
 }
->>>>>>> Stashed changes
+/*
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,7 +45,7 @@ void fft(double *reel, double *imag, int log2n, int sign) {
 
     n = 1<<log2n;
 
-    /* Inversement des bits */
+    /* Inversement des bits
     for(i=0; i<n; i++) {
 
         for(j=log2n-1, m=0, k=i; j>=0; j--, k>>=1) m += (k&1)<<j;
@@ -56,14 +56,14 @@ void fft(double *reel, double *imag, int log2n, int sign) {
         }
     }
 
-    /* normalisation de la transformée de Fourier */
+     normalisation de la transformée de Fourier
     norm = 1.0/sqrt((double)n);
     for(i=0; i<n ;i++) {
         reel[i] *= norm;
         imag[i] *= norm;
     }
 
-    /* calcul de la FFT */
+    /* calcul de la FFT
     for(j=0; j < log2n; j++) {
         m = 1<<j;  m2 = 2*m;
         c1 = 1.0;
@@ -123,3 +123,4 @@ int main(int argc, char *argv[])
     system("PAUSE");
     return 0;
 }
+*/
