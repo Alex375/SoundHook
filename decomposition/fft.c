@@ -5,25 +5,117 @@
 // FAST FOURIER TRANSFORM
 // Exemple de la FFT sur la fonction f(x) = x*(1-x)
 
+#include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "/usr/local/Cellar/fftw/3.3.9/include/fftw3.h"
+
+#define RATIO_DETECT_SPIKE 7
+#define LEN_DETECT_SPIKE 2
+
+void treatOut(double* outMagn, int n_out, double time)
+{
+    int inc = 1;
+    /*for (int i = 1; i < n_out; ++i)
+    {
+        if((outMagn[i] >= outMagn[i - 1]) != inc)
+            if (inc == 1)
+            {
+                double low = outMagn[i]+1;
+                if (i-LEN_DETECT_SPIKE >= 0)
+                    low = outMagn[i-LEN_DETECT_SPIKE];
+
+                double high = outMagn[i]+1;
+                if (i+LEN_DETECT_SPIKE < n_out)
+                    high = outMagn[i+LEN_DETECT_SPIKE];
+                if(low * RATIO_DETECT_SPIKE < outMagn[i] && high * RATIO_DETECT_SPIKE < outMagn[i])
+                {
+
+                    printf("We found a new dominating frequence : %f hertz", i / time);
+
+                    if(i / time < 100 || i / time > 10000)
+                        printf("   (sus) ");
+                    printf("\n");
+
+                }
+            }
+            inc = !inc;
+    }*/
+
+    int maxI = 0;
+    for (int i = 0; i < n_out; ++i)
+    {
+        if (outMagn[i] > outMagn[maxI])
+            maxI = i;
+    }
+
+    printf("The dominating frequence is : %f hertz", maxI / time);
+
+    if(maxI / time < 100 || maxI / time > 10000)
+        printf("   (sus) ");
+    printf("\n");
+
+}
 
 
 
 // fft init
 // real numbers in
-int fft()
+int fft(int * decoded, int sizeIn, double time)
 {
-    int buffer_size = 16;
-
-    double * in  = (double*)fftw_malloc(sizeof(double) * buffer_size);
-    int n_out = ((buffer_size/2)+1);
+    double * in  = (double*)fftw_malloc(sizeof(double) * sizeIn);
+    int n_out = ((sizeIn/2)+1);
 // complex numbers out
     fftw_complex* out = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * n_out);
-    int current_entry = 0;
-    int filled = 0;
 
-    printf("ffting");
+    /* false in fill
+    for (int i = 0; i < sizeIn; ++i)
+    {
+        in[i] = sin(i*2*M_PI/2.2 + M_PI/2) * 10;
+
+    }*/
+    for (int i = 0; i < sizeIn; ++i)
+    {
+        in[i] = ((double)decoded[i]) / 128;
+        printf("%f\n", in[i]);
+    }
+
+
+    fftw_plan plan_forward;
+
+    // real in and complex out
+    plan_forward = fftw_plan_dft_r2c_1d ( sizeIn, in, out, FFTW_ESTIMATE );
+
+    // do it
+    fftw_execute ( plan_forward );
+
+
+    double * outMagn = malloc(sizeof(double) * n_out);
+    for (int i = 0; i < ((sizeIn/2)+1); ++i) {
+        for (int j = 0; j < 2; ++j) {
+            //printf("out[%i][%i] = %f\n", i, j, out[i][j]);
+        }
+
+        double mag = sqrt(out[i][0] * out[i][0] + out[i][1] * out[i][1]);
+
+        outMagn[i] = mag;
+    }
+
+    for (int i = 13250; i < 13350; ++i)
+    {
+        printf("Magn Out %i : %f\n", i, outMagn[i]);
+
+    }
+
+
+
+    treatOut(outMagn, n_out, time);
+
+
+
+
+    fftw_destroy_plan(plan_forward);
+    fftw_free(in); fftw_free(out);
     return 0;
 }
 /*
@@ -45,7 +137,7 @@ void fft(double *reel, double *imag, int log2n, int sign) {
 
     n = 1<<log2n;
 
-    /* Inversement des bits
+     Inversement des bits
     for(i=0; i<n; i++) {
 
         for(j=log2n-1, m=0, k=i; j>=0; j--, k>>=1) m += (k&1)<<j;
@@ -63,7 +155,7 @@ void fft(double *reel, double *imag, int log2n, int sign) {
         imag[i] *= norm;
     }
 
-    /* calcul de la FFT
+     calcul de la FFT
     for(j=0; j < log2n; j++) {
         m = 1<<j;  m2 = 2*m;
         c1 = 1.0;

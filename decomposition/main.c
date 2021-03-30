@@ -3,11 +3,20 @@
 //
 #include <stdio.h>
 #include "/usr/local/Cellar/fftw/3.3.9/include/fftw3.h"
+#include "../file_decoder/wav/wav.h"
+#include "../file_decoder/wav/WavDecoder.h"
+#include "../file_decoder/WavTools.h"
 
 #include "fft.h"
 
 int main(){
     int a = 8;
     printf("decomposition of your fat mom\n");
-    fft();
+    FILE * f = openFile("/Users/noway/Desktop/S4-Project/SoundHook/file_decoder/sounds/testsin32.wav");
+    WavData * data = decodeWave(f);
+    for(int i = 0; i < data->header->num_of_sample; i++)
+    {
+        printf("%i -> %i\n", i, data->data[i]);
+    }
+    fft(data->data, data->header->num_of_sample, (double)data->header->overall_size/ (double)data->header->byterate);
 }
