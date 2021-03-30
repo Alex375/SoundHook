@@ -5,11 +5,11 @@
 
 int main()
 {
-    char c = 205;
+    char c = (char)205;
 
-    printf("Signed -> %x %x\n", c, c & 0x00ff);
+    printf("Signed -> %x %x - %lu\n", c, (char) (c & 0x00ff), sizeof(char));
 
     unsigned char uc = 205;
 
-    printf("Unsigned -> %x %x", uc, uc & 0x00ff);
+    printf("Unsigned -> %x %x - %lu\n", uc, (char) (uc & 0x00ff), sizeof(unsigned char));
 }
