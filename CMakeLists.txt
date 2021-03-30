@@ -26,4 +26,4 @@ set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Werror -pedantic-errors")
 add_executable(decoder ${src_decode} ${src_decode_wav})
 add_executable(testfft decomposition/main.c decomposition/fft.c)
 
-TARGET_LINK_LIBRARIES(decoder ${FFTW3_LIBRARIES})
+TARGET_LINK_LIBRARIES(testfft ${FFTW3_LIBRARIES})

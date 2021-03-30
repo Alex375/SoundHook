@@ -5,7 +5,11 @@
 #ifndef SOUNDHOOK_FFT_H
 #define SOUNDHOOK_FFT_H
 
-void fft(double *reel, double *imag, int log2n, int sign);
+
+//void fft(double *reel, double *imag, int log2n, int sign);
+
+
+int fft();
 
 
 #endif //SOUNDHOOK_FFT_H
