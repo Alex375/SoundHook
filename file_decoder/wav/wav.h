@@ -24,6 +24,13 @@ struct WavHeader
     unsigned long num_of_sample;                         // Number of sample
 };
 
+typedef struct WavData WavData;
+struct WavData
+{
+    WavHeader* header;
+    int * data;
+};
+
 
 #endif //SOUNDHOOK_WAV_H
 

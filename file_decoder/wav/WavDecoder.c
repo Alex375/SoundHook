@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "wav.h"
-#include "WavTools.h"
+#include "../WavTools.h"
 
 
 
@@ -51,5 +51,93 @@ WavHeader* decodeWavHeader(FILE* f)
     return header;
 }
 
+int* decodeData(FILE* f, WavHeader* header)
+{
+    header->num_of_sample = (8 * header->data_size) / (header->channels * header->bits_per_sample);
+    int * res = malloc(sizeof (int) * header->num_of_sample * header->channels);
+    long sample_size = (header->channels * header->bits_per_sample) / 8;
+    long byte_in_channel = sample_size / header->channels;
+    long low_limit = 0;
+    long high_limit = 0;
+    switch (header->bits_per_sample) {
+        case 8:
+            low_limit = -128;
+            high_limit = 127;
+            break;
+        case 16:
+            low_limit = -32768;
+            high_limit = 32767;
+            break;
+        case 24:
+            low_limit = -8388608;
+            high_limit = 8388607;
+            break;
+        case 32:
+            low_limit = -2147483648;
+            high_limit = 2147483647;
+            break;
+        default:
+            printf("Bit per sample error.\n");
+            return 6;
+    }
 
+    char data_buffer[sample_size];
+    int status = 0;
+    for (unsigned long i = 0; i < header->num_of_sample; i++)
+    {
+        status = fread(data_buffer, sizeof (char) * sample_size, 1, f);
+        if (status != 1)
+        {
+            printf("Error while reading data.\n");
+            return 7;
+        }
 
+        int data = 0;
+        for (unsigned int chan = 0; chan < header->channels; chan++)
+        {
+            data = 0;
+            switch (byte_in_channel) {
+                case 1:
+                    data = data_buffer[chan * byte_in_channel] & 0x00ff;
+                    data -= 128;
+                    break;
+                case 2:
+                    data = (data_buffer[chan * byte_in_channel] & 0x00ff) |
+                           ((data_buffer[chan * byte_in_channel + 1] & 0x00ff)<<8);
+                    break;
+                case 3 :
+                    data = ((data_buffer[chan * byte_in_channel] & 0x00ff) |
+                            ((data_buffer[chan * byte_in_channel + 1] & 0x00ff) << 8) |
+                            ((data_buffer[chan * byte_in_channel + 2] & 0x00ff) << 16));
+                    break;
+                case 4:
+                    data = (data_buffer[chan * byte_in_channel] & 0x00ff) |
+                           ((data_buffer[chan * byte_in_channel + 1] & 0x00ff) << 8) |
+                           ((data_buffer[chan * byte_in_channel + 2] & 0x00ff) << 16) |
+                           ((data_buffer[chan * byte_in_channel + 3] & 0x00ff) << 24);
+                    break;
+                default:
+                    err(1, "Byte in channel error");
+            }
+
+            if (data < low_limit || data > high_limit)
+            {
+                printf("Value out of range at sample %lu, channel %i\n", i, chan);
+                return 8;
+            }
+            //printf("Data sample %lu chan %u -> %f -> %i\n", i, chan, (float)(data) / (float)(high_limit), data);
+            res[i + chan] = data;
+
+        }
+    }
+    return res;
+
+}
+
+WavData * decodeWave(FILE* f)
+{
+    WavData* data = malloc(sizeof (WavData));
+    data->header = decodeWavHeader(f);
+    data->data = decodeData(f, data->header);
+    return data;
+}
