@@ -11,7 +11,7 @@
 
 int main()
 {
-    FILE* f = openFile("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sounds/testeven32.wav");
+    FILE* f = openFile("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sounds/testdualtone.wav");
     WavData * data = decodeWave(f);
     printf("%i\n", checkHeader(data->header, f));
     for(size_t i = 0; i < data->header->num_of_sample; i++)

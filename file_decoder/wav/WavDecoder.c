@@ -96,14 +96,16 @@ int* decodeData(FILE* f, WavHeader* header)
         for (unsigned int chan = 0; chan < header->channels; chan++)
         {
             data = 0;
+            short temp;
             switch (byte_in_channel) {
                 case 1:
                     data = data_buffer[chan * byte_in_channel] & 0x00ff;
                     data -= 128;
                     break;
                 case 2:
-                    data = (data_buffer[chan * byte_in_channel] & 0x00ff) |
-                           ((data_buffer[chan * byte_in_channel + 1] & 0x00ff)<<8);
+                    temp = (data_buffer[chan * byte_in_channel] & 0x00ff) |
+                                 ((data_buffer[chan * byte_in_channel + 1] & 0x00ff)<<8);
+                    data = temp;
                     break;
                 case 3 :
                     data = ((data_buffer[chan * byte_in_channel] & 0x00ff) |
