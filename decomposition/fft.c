@@ -12,6 +12,7 @@
 
 #define RATIO_DETECT_SPIKE 7
 #define LEN_DETECT_SPIKE 2
+#define NB_MAX 5
 
 void treatOut(double* outMagn, int n_out, double time)
 {
@@ -41,19 +42,30 @@ void treatOut(double* outMagn, int n_out, double time)
             }
             inc = !inc;
     }*/
-
+    int fullMax = 0;
     int maxI = 0;
-    for (int i = 0; i < n_out; ++i)
-    {
-        if (outMagn[i] > outMagn[maxI])
-            maxI = i;
+    for (int i = 0; i < NB_MAX; ++i) {
+        for (int j = 0; j < n_out; ++j)
+        {
+            if (outMagn[j] > outMagn[maxI])
+                maxI = j;
+        }
+        if (i == 0)
+            fullMax =maxI;
+        if(outMagn[maxI] * RATIO_DETECT_SPIKE < outMagn[fullMax])
+            break;
+
+        printf("The dominating frequence is : %f hertz", maxI / time);
+
+        if(maxI / time < 100 || maxI / time > 10000)
+            printf("   (sus) ");
+        printf("\n");
+
+
+
+
     }
 
-    printf("The dominating frequence is : %f hertz", maxI / time);
-
-    if(maxI / time < 100 || maxI / time > 10000)
-        printf("   (sus) ");
-    printf("\n");
 
 }
 
