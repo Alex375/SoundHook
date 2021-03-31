@@ -7,12 +7,11 @@
 #include <stdio.h>
 #include <err.h>
 
-int checkRiff(WavHeader* h)
+int checkMarker(unsigned char test[4], const char * ref)
 {
-    unsigned char* test = "RIFF";
     for (size_t i = 0; i < 4; i++)
     {
-        if (h->riff[i] != test[i])
+        if (test[i] != ref[i])
         {
             return 0;
         }
@@ -20,7 +19,9 @@ int checkRiff(WavHeader* h)
     return 1;
 }
 
-int checkHeader(WavHeader* header, FILE* f)
+
+
+int checkHeader(WavHeader* header)
 {
     if (header->format_type != 1 && header->format_type != 3 && header->format_type != 6 && header->format_type != 7)
     {

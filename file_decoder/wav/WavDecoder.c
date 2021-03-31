@@ -11,6 +11,7 @@
 #include <string.h>
 #include "wav.h"
 #include "../WavTools.h"
+#include "WavChecker.h"
 
 
 
@@ -25,15 +26,27 @@ WavHeader* decodeWavHeader(FILE* f)
     int status = 0;
 
     freadHand(header->riff, sizeof (header->riff), 1, f);
+    if(! checkMarker(header->riff, "RIFF"))
+        return NULL;
+
     freadHand(buff4, sizeof (char) * 4, 1, f);
     header->overall_size = littleEndianToBigEndian4(buff4);
 
     freadHand(header->wave, sizeof (header->wave), 1, f);
+    if(! checkMarker(header->wave, "WAVE"))
+        return NULL;
     freadHand(header->fmt_chunk_marker, sizeof (header->fmt_chunk_marker), 1, f);
+    header->fmt_chunk_marker[3] = '\0';
+    if(! checkMarker(header->fmt_chunk_marker, "fmt"))
+        return NULL;
     freadHand(buff4, sizeof (char ) * 4, 1, f);
     header->length_of_fmt = littleEndianToBigEndian4(buff4);
+    if(header->length_of_fmt != 16)
+        return NULL;
     freadHand(buff2, sizeof (char) * 2, 1, f);
     header->format_type = littleEndianToBigEndian2(buff2);
+    if(header->format_type != 1)
+        return NULL;
     freadHand(buff2, sizeof (char) * 2, 1, f);
     header->channels = littleEndianToBigEndian2(buff2);
     freadHand(buff4, sizeof (char) * 4, 1, f);
@@ -55,6 +68,8 @@ int* decodeData(FILE* f, WavHeader* header)
 {
     header->num_of_sample = (8 * header->data_size) / (header->channels * header->bits_per_sample);
     int * res = malloc(sizeof (int) * header->num_of_sample * header->channels);
+    if (res == NULL)
+        err(EXIT_FAILURE, "Malloc failed.");
     long sample_size = (header->channels * header->bits_per_sample) / 8;
     long byte_in_channel = sample_size / header->channels;
     long low_limit = 0;
@@ -77,8 +92,7 @@ int* decodeData(FILE* f, WavHeader* header)
             high_limit = 2147483647;
             break;
         default:
-            printf("Bit per sample error.\n");
-            return 6;
+            err(EXIT_FAILURE, "Byte per sample error.");
     }
 
     char data_buffer[sample_size];
@@ -89,7 +103,7 @@ int* decodeData(FILE* f, WavHeader* header)
         if (status != 1)
         {
             printf("Error while reading data.\n");
-            return 7;
+            return NULL;
         }
 
         int data = 0;
@@ -111,6 +125,14 @@ int* decodeData(FILE* f, WavHeader* header)
                     data = ((data_buffer[chan * byte_in_channel] & 0x00ff) |
                             ((data_buffer[chan * byte_in_channel + 1] & 0x00ff) << 8) |
                             ((data_buffer[chan * byte_in_channel + 2] & 0x00ff) << 16));
+                    if (data > high_limit)
+                    {
+                        data ^= 0x00ffffff;
+                        data += 1;
+                        data = data & 0x00ffffff;
+                        data ^= 0xffffffff;
+                        data += 1;
+                    }
                     break;
                 case 4:
                     data = (data_buffer[chan * byte_in_channel] & 0x00ff) |
@@ -125,7 +147,7 @@ int* decodeData(FILE* f, WavHeader* header)
             if (data < low_limit || data > high_limit)
             {
                 printf("Value out of range at sample %lu, channel %i\n", i, chan);
-                return 8;
+                return NULL;
             }
             //printf("Data sample %lu chan %u -> %f -> %i\n", i, chan, (float)(data) / (float)(high_limit), data);
             res[i + chan] = data;
@@ -139,7 +161,15 @@ int* decodeData(FILE* f, WavHeader* header)
 WavData * decodeWave(FILE* f)
 {
     WavData* data = malloc(sizeof (WavData));
+    if (data == NULL)
+        perror("Malloc failed");
     data->header = decodeWavHeader(f);
+    if (data->header == NULL)
+        err(EXIT_FAILURE, "Header docoding failed check format.");
     data->data = decodeData(f, data->header);
+    if(data->data == NULL)
+        err(EXIT_FAILURE, "Data decoding failed chack data.");
+    if (checkHeader(data->header) != 0)
+        err(EXIT_FAILURE, "Header checking failed.");
     return data;
 }

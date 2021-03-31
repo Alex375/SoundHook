@@ -12,8 +12,9 @@
 int main(){
     int a = 8;
     printf("decomposition of your fat mom\n");
-    FILE * f = openFile("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sounds/testlowamp.wav");
+    FILE * f = openFile("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sounds/testirl.wav");
     WavData * data = decodeWave(f);
+    printWavHeader(data->header);
     for(int i = 0; i < data->header->num_of_sample; i++)
     {
         //printf("%i -> %i\n", i, data->data[i]);

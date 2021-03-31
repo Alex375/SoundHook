@@ -8,8 +8,8 @@
 #include "wav.h"
 #include <stdio.h>
 
-int checkHeader(WavHeader* header, FILE* f);
-int checkRiff(WavHeader* h);
+int checkMarker(unsigned char test[4], const char * ref);
+int checkHeader(WavHeader* header);
 
 
 #endif //SOUNDHOOK_WAVCHECKER_H

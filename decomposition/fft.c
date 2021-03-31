@@ -8,11 +8,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "/usr/local/Cellar/fftw/3.3.9/include/fftw3.h"
+#include </usr/local/include/fftw3.h>
 #include "../GraphTools/Graph.h"
 
+
 #define RATIO_DETECT_SPIKE 3
-#define LEN_DETECT_SPIKE 3
+#define LEN_DETECT_SPIKE 30
 #define NB_MAX 10
 
 void treatOut(double* outMagn, int n_out, double time)
