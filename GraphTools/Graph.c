@@ -6,7 +6,7 @@
 #include "pbPlots.h"
 #include "supportLib.h"
 
-int grapher(double* xs, double* ys, size_t xlen, size_t ylen)
+void grapher(double* xs, double* ys, size_t xlen, size_t ylen, char* name)
 {
 
 
@@ -15,8 +15,8 @@ int grapher(double* xs, double* ys, size_t xlen, size_t ylen)
 
     size_t length;
     double *pngdata = ConvertToPNG(&length, canvasReference->image);
-    WriteToFile(pngdata, length, "example1.png");
+    WriteToFile(pngdata, length, name);
     DeleteImage(canvasReference->image);
 
-    return 0;
+
 }

@@ -6,6 +6,6 @@
 #define SOUNDHOOK_GRAPH_H
 #include <stdlib.h>
 
-int grapher(double* xs, double* ys, size_t xlen, size_t ylen);
+void grapher(double* xs, double* ys, size_t xlen, size_t ylen, char* name);
 
 #endif //SOUNDHOOK_GRAPH_H
