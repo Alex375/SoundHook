@@ -10,7 +10,7 @@
 #include <math.h>
 #include "/usr/local/Cellar/fftw/3.3.9/include/fftw3.h"
 
-#define RATIO_DETECT_SPIKE 10
+#define RATIO_DETECT_SPIKE 3
 #define LEN_DETECT_SPIKE 3
 #define NB_MAX 10
 
