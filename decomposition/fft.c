@@ -10,14 +10,14 @@
 #include <math.h>
 #include "/usr/local/Cellar/fftw/3.3.9/include/fftw3.h"
 
-#define RATIO_DETECT_SPIKE 7
-#define LEN_DETECT_SPIKE 2
-#define NB_MAX 5
+#define RATIO_DETECT_SPIKE 3
+#define LEN_DETECT_SPIKE 3
+#define NB_MAX 10
 
 void treatOut(double* outMagn, int n_out, double time)
 {
-    int inc = 1;
-    /*for (int i = 1; i < n_out; ++i)
+    /*int inc = 1;
+    for (int i = 1; i < n_out; ++i)
     {
         if((outMagn[i] >= outMagn[i - 1]) != inc)
             if (inc == 1)
@@ -42,7 +42,7 @@ void treatOut(double* outMagn, int n_out, double time)
             }
             inc = !inc;
     }*/
-    int fullMax = 0;
+    double fullMax = 0;
     int maxI = 0;
     for (int i = 0; i < NB_MAX; ++i) {
         for (int j = 0; j < n_out; ++j)
@@ -51,17 +51,23 @@ void treatOut(double* outMagn, int n_out, double time)
                 maxI = j;
         }
         if (i == 0)
-            fullMax =maxI;
-        if(outMagn[maxI] * RATIO_DETECT_SPIKE < outMagn[fullMax])
+            fullMax = outMagn[maxI];
+        if(outMagn[maxI] * RATIO_DETECT_SPIKE < fullMax)
             break;
 
-        printf("The dominating frequence is : %f hertz", maxI / time);
 
-        if(maxI / time < 100 || maxI / time > 10000)
+
+        int f = floor(maxI / time + 0.5);
+
+        printf("The dominating frequence is : %i hertz (%i in tab)", f, maxI);
+
+        if(f < 100 || f > 10000)
             printf("   (sus) ");
         printf("\n");
 
-
+        for (int j = -LEN_DETECT_SPIKE; j <= LEN_DETECT_SPIKE; ++j) {
+            outMagn[maxI + j] = 0;
+        }
 
 
     }
@@ -103,17 +109,25 @@ int fft(int * decoded, int sizeIn, double time)
 
 
     double * outMagn = malloc(sizeof(double) * n_out);
-    for (int i = 0; i < ((sizeIn/2)+1); ++i) {
-        for (int j = 0; j < 2; ++j) {
-            //printf("out[%i][%i] = %f\n", i, j, out[i][j]);
-        }
-
+    for (int i = 0; i < n_out; ++i)
+    {
         double mag = sqrt(out[i][0] * out[i][0] + out[i][1] * out[i][1]);
-
         outMagn[i] = mag;
     }
 
-    for (int i = 13250; i < 13350; ++i)
+    double max = 0;
+    for (int j = 0; j < n_out; ++j)
+    {
+        if (outMagn[j] > max)
+            max = outMagn[j];
+    }
+
+    for (int i = 0; i < n_out; ++i)
+    {
+        outMagn[i] = outMagn[i]/max*1000;
+    }
+
+    for (int i = 1990*3; i < 3100*3; ++i)
     {
         printf("Magn Out %i : %f\n", i, outMagn[i]);
 
@@ -128,6 +142,7 @@ int fft(int * decoded, int sizeIn, double time)
 
     fftw_destroy_plan(plan_forward);
     fftw_free(in); fftw_free(out);
+    free(outMagn);
     return 0;
 }
 /*
