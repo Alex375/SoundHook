@@ -94,8 +94,8 @@ int fft(int * decoded, int sizeIn, double time)
     }*/
     for (int i = 0; i < sizeIn; ++i)
     {
-        in[i] = ((double)decoded[i]) / 128;
-        printf("%f\n", in[i]);
+        in[i] = ((double)decoded[i]) ;
+        //printf("%f\n", in[i]);
     }
 
 
@@ -129,7 +129,7 @@ int fft(int * decoded, int sizeIn, double time)
 
     for (int i = 1990*3; i < 3100*3; ++i)
     {
-        printf("Magn Out %i : %f\n", i, outMagn[i]);
+        //printf("Magn Out %i : %f\n", i, outMagn[i]);
 
     }
 

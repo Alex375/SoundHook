@@ -12,11 +12,11 @@
 int main(){
     int a = 8;
     printf("decomposition of your fat mom\n");
-    FILE * f = openFile("/Users/noway/Desktop/S4-Project/SoundHook/file_decoder/sounds/testdualtone32.wav");
+    FILE * f = openFile("/Users/noway/Desktop/S4-Project/SoundHook/file_decoder/sounds/noisytone32.wav");
     WavData * data = decodeWave(f);
     for(int i = 0; i < data->header->num_of_sample; i++)
     {
-        printf("%i -> %i\n", i, data->data[i]);
+        //printf("%i -> %i\n", i, data->data[i]);
     }
     fft(data->data, data->header->num_of_sample, (double)data->header->overall_size/ (double)data->header->byterate);
 }
