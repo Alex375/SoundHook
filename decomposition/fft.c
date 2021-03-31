@@ -84,6 +84,22 @@ void treatOut(double* outMagn, int n_out, double time)
 int fft(int * decoded, int sizeIn, double time)
 {
     double * in  = (double*)fftw_malloc(sizeof(double) * sizeIn);
+    for (int i = 0; i < sizeIn; ++i)
+    {
+        in[i] = ((double)decoded[i]) ;
+        //printf("%f\n", in[i]);
+    }
+
+    double * xIn = malloc(sizeof (double) * sizeIn);
+    for (size_t i = 0; i < sizeIn; i++)
+    {
+        xIn[i] = (double)i;
+    }
+
+    grapher(xIn, in, (size_t)sizeIn, (size_t)sizeIn, "1.original.png");
+
+
+
     int n_out = ((sizeIn/2)+1);
 // complex numbers out
     fftw_complex* out = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * n_out);
@@ -94,11 +110,7 @@ int fft(int * decoded, int sizeIn, double time)
         in[i] = sin(i*2*M_PI/2.2 + M_PI/2) * 10;
 
     }*/
-    for (int i = 0; i < sizeIn; ++i)
-    {
-        in[i] = ((double)decoded[i]) ;
-        //printf("%f\n", in[i]);
-    }
+
 
 
     fftw_plan plan_forward;
@@ -141,11 +153,15 @@ int fft(int * decoded, int sizeIn, double time)
         xs[i] = (double)i / time;
     }
 
-    grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2);
+    grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "2.fourierGraph.png");
 
     treatOut(outMagn, n_out, time);
 
-
+    for (int i = 128000; i < 128100; ++i)
+    {
+        out[i][0] = 0;
+        out[i][1] = 0;
+    }
 
     ///////////////////// ivert FFT
 
@@ -157,18 +173,42 @@ int fft(int * decoded, int sizeIn, double time)
 
     fftw_execute(ifft);
 
-    double * xIn = malloc(sizeof (double) * sizeIn);
-    for (size_t i = 0; i < n_out; i++)
+
+    grapher(xIn, back, (size_t)sizeIn, (size_t)sizeIn, "3.corrected.png");
+
+
+    ////////////////VERIF FFT
+
+    plan_forward = fftw_plan_dft_r2c_1d ( sizeIn, back, out, FFTW_ESTIMATE );
+
+    // do it
+    fftw_execute ( plan_forward );
+
+    for (int i = 0; i < n_out; ++i)
     {
-        xIn[i] = (double)i;
+        double mag = sqrt(out[i][0] * out[i][0] + out[i][1] * out[i][1]);
+        outMagn[i] = mag;
     }
 
-    grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2);
+    max = 0;
+    for (int j = 0; j < n_out; ++j)
+    {
+        if (outMagn[j] > max)
+            max = outMagn[j];
+    }
+
+    for (int i = 0; i < n_out; ++i)
+    {
+        outMagn[i] = outMagn[i]/max*1000;
+    }
+    grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "4.2nd_fourier_verif.png");
 
 
 
 
 
+
+    ////////////////////FREE
 
     fftw_destroy_plan(plan_forward);
     fftw_free(in); fftw_free(out);

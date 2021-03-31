@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "WavTools.h"
 #include "wav/WavChecker.h"
-
+/*
 int main()
 {
     FILE* f = openFile("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sounds/testsin24.wav");
@@ -21,3 +21,4 @@ int main()
 
     return 0;
 }
+*/
