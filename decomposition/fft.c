@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "/usr/local/Cellar/fftw/3.3.9/include/fftw3.h"
+#include "../GraphTools/Graph.h"
 
 #define RATIO_DETECT_SPIKE 3
 #define LEN_DETECT_SPIKE 3
@@ -133,7 +134,13 @@ int fft(int * decoded, int sizeIn, double time)
 
     }
 
+    double * xs = malloc(sizeof (double) * n_out);
+    for (size_t i = 0; i < n_out; i++)
+    {
+        xs[i] = (double)i / time;
+    }
 
+    grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2);
 
     treatOut(outMagn, n_out, time);
 

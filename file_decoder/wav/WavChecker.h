@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 int checkHeader(WavHeader* header, FILE* f);
-
+int checkRiff(WavHeader* h);
 
 
 #endif //SOUNDHOOK_WAVCHECKER_H

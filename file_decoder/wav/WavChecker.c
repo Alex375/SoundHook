@@ -7,7 +7,18 @@
 #include <stdio.h>
 #include <err.h>
 
-
+int checkRiff(WavHeader* h)
+{
+    unsigned char* test = "RIFF";
+    for (size_t i = 0; i < 4; i++)
+    {
+        if (h->riff[i] != test[i])
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
 
 int checkHeader(WavHeader* header, FILE* f)
 {
