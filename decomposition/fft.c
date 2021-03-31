@@ -63,7 +63,7 @@ void treatOut(double* outMagn, int n_out, double time)
 
         printf("The dominating frequence is : %i hertz (%i in tab)", f, maxI);
 
-        if(f < 100 || f > 10000)
+        if(f < 70 || f > 4000)
             printf("   (sus) ");
         printf("\n");
 
@@ -144,6 +144,28 @@ int fft(int * decoded, int sizeIn, double time)
     grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2);
 
     treatOut(outMagn, n_out, time);
+
+
+
+    ///////////////////// ivert FFT
+
+
+    fftw_plan ifft;
+    double * back  = (double*)fftw_malloc(sizeof(double) * sizeIn);
+
+    ifft = fftw_plan_dft_c2r_1d(sizeIn, out, back, FFTW_ESTIMATE);
+
+    fftw_execute(ifft);
+
+    double * xIn = malloc(sizeof (double) * sizeIn);
+    for (size_t i = 0; i < n_out; i++)
+    {
+        xIn[i] = (double)i;
+    }
+
+    grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2);
+
+
 
 
 
