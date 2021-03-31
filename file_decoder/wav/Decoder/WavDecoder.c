@@ -9,9 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "wav.h"
+#include "../wav.h"
 #include "../WavTools.h"
-#include "WavChecker.h"
+#include "../WavChecker.h"
 
 
 

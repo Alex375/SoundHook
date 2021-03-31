@@ -4,7 +4,7 @@
 
 #ifndef SOUNDHOOK_WAVDECODER_H
 #define SOUNDHOOK_WAVDECODER_H
-#include "wav.h"
+#include "../wav.h"
 #include "stdio.h"
 
 WavHeader* decodeWavHeader(FILE* f);

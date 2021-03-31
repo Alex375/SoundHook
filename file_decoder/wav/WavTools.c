@@ -3,7 +3,7 @@
 //
 
 #include "WavTools.h"
-#include "wav/wav.h"
+#include "wav.h"
 #include <stdio.h>
 #include <err.h>
 #include <string.h>

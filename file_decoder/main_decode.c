@@ -2,11 +2,11 @@
 // Created by Alexandre Josien on 10/03/2021.
 //
 
-#include "wav/WavDecoder.h"
+#include "wav/Decoder/WavDecoder.h"
 #include "wav/wav.h"
 #include<stdio.h>
 #include <stdio.h>
-#include "WavTools.h"
+#include "wav/WavTools.h"
 #include "wav/WavChecker.h"
 /*
 int main()

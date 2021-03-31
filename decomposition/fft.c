@@ -10,6 +10,7 @@
 #include <math.h>
 #include </usr/local/include/fftw3.h>
 #include "../GraphTools/Graph.h"
+#include "../file_decoder/wav/Recoder/Recoder.h"
 
 
 #define RATIO_DETECT_SPIKE 3
@@ -172,6 +173,18 @@ int fft(int * decoded, int sizeIn, double time)
     ifft = fftw_plan_dft_c2r_1d(sizeIn, out, back, FFTW_ESTIMATE);
 
     fftw_execute(ifft);
+    for (size_t i = 0; i < sizeIn; i++)
+    {
+        back[i] /= sizeIn;
+    }
+
+    int* recod = malloc(sizeof (int) * sizeIn);
+    for (size_t i = 0; i < sizeIn; i++)
+    {
+        recod[i] = (int)back[i];
+    }
+    FILE* f = fopen("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sounds/testirl.wav", "r");
+    recodeWav(recod, f, sizeIn);
 
 
     grapher(xIn, back, (size_t)sizeIn, (size_t)sizeIn, "3.corrected.png");

@@ -18,14 +18,17 @@ endif()
 
 add_executable(main main.c)
 
+file(GLOB src_fft decomposition/*.c)
 file(GLOB src_decode file_decoder/*.c)
 file(GLOB src_decode_wav file_decoder/wav/*.c)
+file(GLOB src_decode_wav_decode file_decoder/wav/Decoder/*.c)
+file(GLOB src_decode_wav_recode file_decoder/wav/Recoder/*c)
 file(GLOB src_graph GraphTools/*)
 
 set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Werror -pedantic-errors")
 
 add_executable(decoder ${src_decode} ${src_decode_wav})
-add_executable(testfft decomposition/main.c decomposition/fft.c ${src_decode} ${src_decode_wav} ${src_graph})
+add_executable(testfft ${src_fft} ${src_decode} ${src_decode_wav} ${src_graph} ${src_decode_wav_decode} ${src_decode_wav_recode})
 
 
 TARGET_LINK_LIBRARIES(testfft ${FFTW3_LIBRARIES})
