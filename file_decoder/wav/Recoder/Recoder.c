@@ -17,7 +17,7 @@ void recodeWav(int* data, FILE* or, long size)
 
     char* header = malloc(44 * sizeof (char ));
     fread(header, sizeof (char ) * 44, 1, or);
-    FILE* fp = fopen("new.wav", "w");
+    FILE* fp = fopen("corrected.wav", "w");
     fwrite(header, sizeof (char) * 44, 1, fp);
     for (long i = 0; i < size; i++)
     {

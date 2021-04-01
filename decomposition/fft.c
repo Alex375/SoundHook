@@ -8,85 +8,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include "Treat/Treat.h"
 #include </usr/local/include/fftw3.h>
 #include "../GraphTools/Graph.h"
 #include "../file_decoder/wav/Recoder/Recoder.h"
 
 
-#define RATIO_DETECT_SPIKE 3
-#define LEN_DETECT_SPIKE 30
-#define NB_MAX 3
-
-#define RANGE_DESTROY 100
-
-void treatOut(double* outMagn, int n_out, double time, int* iSpikes)
-{
-    /*int inc = 1;
-    for (int i = 1; i < n_out; ++i)
-    {
-        if((outMagn[i] >= outMagn[i - 1]) != inc)
-            if (inc == 1)
-            {
-                double low = outMagn[i]+1;
-                if (i-LEN_DETECT_SPIKE >= 0)
-                    low = outMagn[i-LEN_DETECT_SPIKE];
-
-                double high = outMagn[i]+1;
-                if (i+LEN_DETECT_SPIKE < n_out)
-                    high = outMagn[i+LEN_DETECT_SPIKE];
-                if(low * RATIO_DETECT_SPIKE < outMagn[i] && high * RATIO_DETECT_SPIKE < outMagn[i])
-                {
-
-                    printf("We found a new dominating frequence : %f hertz", i / time);
-
-                    if(i / time < 100 || i / time > 10000)
-                        printf("   (sus) ");
-                    printf("\n");
-
-                }
-            }
-            inc = !inc;
-    }*/
-    double fullMax = 0;
-    int maxI = 0;
-    for (int i = 0; i < NB_MAX; ++i) {
-        for (int j = 0; j < n_out; ++j)
-        {
-            if (outMagn[j] > outMagn[maxI])
-                maxI = j;
-        }
-        if (i == 0)
-            fullMax = outMagn[maxI];
-        if(outMagn[maxI] * RATIO_DETECT_SPIKE < fullMax)
-        {
-            iSpikes[i] = -1;
-            break;
-        }
-
-        iSpikes[i] = maxI;
-
-        int f = floor(maxI / time + 0.5);
-
-        printf("The dominating frequence is : %i hertz (%i in tab)", f, maxI);
-
-        if(f < 70 || f > 4000)
-            printf("   (sus) ");
-        printf("\n");
-
-        for (int j = -LEN_DETECT_SPIKE; j <= LEN_DETECT_SPIKE; ++j) {
-            outMagn[maxI + j] = 0;
-        }
 
 
-    }
-
-}
 
 
-///////////////////////// FFT /////////////////////////////
 
-
-int fft(int const* decoded, int sizeIn, double time, char const* file_path)
+// fft init
+// real numbers in
+int fft(int const* decoded, int sizeIn, double time, const char* opener)
 {
     double * in  = (double*)fftw_malloc(sizeof(double) * sizeIn);
     for (int i = 0; i < sizeIn; ++i)
@@ -192,9 +127,7 @@ int fft(int const* decoded, int sizeIn, double time, char const* file_path)
     {
         recod[i] = (int)back[i];
     }
-
-
-    FILE* f = fopen(file_path, "r");
+    FILE* f = fopen(opener, "r");
     recodeWav(recod, f, sizeIn);
 
 
