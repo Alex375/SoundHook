@@ -8,9 +8,11 @@
 
 #include "fft.h"
 
+#define FILE_PATH "/Users/noway/Desktop/S4-Project/SoundHook/file_decoder/sounds/livecodenoise.wav"
+
 int main(){
     printf("decomposition of your fat mom\n");
-    FILE * f = openFile("/Users/noway/Desktop/S4-Project/SoundHook/file_decoder/sounds/testlowamp.wav");
+    FILE * f = openFile(FILE_PATH);
     WavData * data = decodeWave(f);
     fclose(f);
     printWavHeader(data->header);
@@ -18,5 +20,5 @@ int main(){
     {
         //printf("%i -> %i\n", i, data->data[i]);
     }
-    fft(data->data, (int)data->header->num_of_sample, (double)data->header->overall_size/ (double)data->header->byterate);
+    fft(data->data, (int)data->header->num_of_sample, (double)data->header->overall_size/ (double)data->header->byterate, FILE_PATH);
 }

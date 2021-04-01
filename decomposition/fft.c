@@ -15,7 +15,7 @@
 
 #define RATIO_DETECT_SPIKE 3
 #define LEN_DETECT_SPIKE 30
-#define NB_MAX 1
+#define NB_MAX 3
 
 #define RANGE_DESTROY 100
 
@@ -47,7 +47,6 @@ void treatOut(double* outMagn, int n_out, double time, int* iSpikes)
             }
             inc = !inc;
     }*/
-    int fullMaxI = 0;
     double fullMax = 0;
     int maxI = 0;
     for (int i = 0; i < NB_MAX; ++i) {
@@ -57,7 +56,6 @@ void treatOut(double* outMagn, int n_out, double time, int* iSpikes)
                 maxI = j;
         }
         if (i == 0)
-            fullMaxI = maxI;
             fullMax = outMagn[maxI];
         if(outMagn[maxI] * RATIO_DETECT_SPIKE < fullMax)
         {
@@ -85,10 +83,10 @@ void treatOut(double* outMagn, int n_out, double time, int* iSpikes)
 }
 
 
+///////////////////////// FFT /////////////////////////////
 
-// fft init
-// real numbers in
-int fft(int const* decoded, int sizeIn, double time)
+
+int fft(int const* decoded, int sizeIn, double time, char const* file_path)
 {
     double * in  = (double*)fftw_malloc(sizeof(double) * sizeIn);
     for (int i = 0; i < sizeIn; ++i)
@@ -108,16 +106,8 @@ int fft(int const* decoded, int sizeIn, double time)
 
 
     int n_out = ((sizeIn/2)+1);
-// complex numbers out
+    // complex numbers out
     fftw_complex* out = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * n_out);
-
-    /* false in fill
-    for (int i = 0; i < sizeIn; ++i)
-    {
-        in[i] = sin(i*2*M_PI/2.2 + M_PI/2) * 10;
-
-    }*/
-
 
 
     fftw_plan plan_forward;
@@ -125,7 +115,6 @@ int fft(int const* decoded, int sizeIn, double time)
     // real in and complex out
     plan_forward = fftw_plan_dft_r2c_1d ( sizeIn, in, out, FFTW_ESTIMATE );
 
-    // do it
     fftw_execute ( plan_forward );
 
 
@@ -169,16 +158,19 @@ int fft(int const* decoded, int sizeIn, double time)
     int* iSpikes = malloc(sizeof(int) * NB_MAX);
     treatOut(outMagn, n_out, time, iSpikes);
 
-    int i = 0;
-    while (i < NB_MAX && iSpikes[i] != -1)
     {
-        for (int j = iSpikes[i] - (RANGE_DESTROY * time); j <= iSpikes[i] + (RANGE_DESTROY * time); ++j)
+        int i = 0;
+        while (i < NB_MAX && iSpikes[i] != -1)
         {
-            out[j][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
-            out[j][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
+            for (int j = iSpikes[i] - (RANGE_DESTROY * (int)time); j <= iSpikes[i] + (RANGE_DESTROY * (int)time); ++j)
+            {
+                out[j][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
+                out[j][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
+            }
+            i++;
         }
-        i++;
     }
+
 
 
     ///////////////////// invert FFT
@@ -200,7 +192,9 @@ int fft(int const* decoded, int sizeIn, double time)
     {
         recod[i] = (int)back[i];
     }
-    FILE* f = fopen("/Users/noway/Desktop/S4-Project/SoundHook/file_decoder/sounds/testlowamp.wav", "r");
+
+
+    FILE* f = fopen(file_path, "r");
     recodeWav(recod, f, sizeIn);
 
 
@@ -243,5 +237,6 @@ int fft(int const* decoded, int sizeIn, double time)
     fftw_destroy_plan(plan_forward);
     fftw_free(in); fftw_free(out);
     free(outMagn);
+    free(iSpikes);
     return 0;
 }

@@ -9,7 +9,7 @@
 //void fft(double *reel, double *imag, int log2n, int sign);
 
 
-int fft(int const* decoded, int sizeIn, double time);
+int fft(int const* decoded, int sizeIn, double time, char const* file_path);
 
 
 #endif //SOUNDHOOK_FFT_H
