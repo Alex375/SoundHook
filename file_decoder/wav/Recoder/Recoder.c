@@ -25,7 +25,6 @@ void recodeWav(int* data, FILE* or, long size)
                ((data[i] & 0x00ff0000) >> 8) |
                ((data[i] & 0x0000ff00) << 8) |
                ((data[i] & 0x000000ff) << 24);
-        printf("%x -> %x\n", data[i], dataR);
         fwrite(&data[i], sizeof (int), 1, fp);
     }
     fclose(fp);

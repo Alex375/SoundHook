@@ -17,7 +17,9 @@
 #define LEN_DETECT_SPIKE 30
 #define NB_MAX 10
 
-void treatOut(double* outMagn, int n_out, double time)
+#define RANGE_DESTROY 100
+
+int treatOut(double* outMagn, int n_out, double time)
 {
     /*int inc = 1;
     for (int i = 1; i < n_out; ++i)
@@ -45,6 +47,7 @@ void treatOut(double* outMagn, int n_out, double time)
             }
             inc = !inc;
     }*/
+    int fullMaxI = 0;
     double fullMax = 0;
     int maxI = 0;
     for (int i = 0; i < NB_MAX; ++i) {
@@ -54,6 +57,7 @@ void treatOut(double* outMagn, int n_out, double time)
                 maxI = j;
         }
         if (i == 0)
+            fullMaxI = maxI;
             fullMax = outMagn[maxI];
         if(outMagn[maxI] * RATIO_DETECT_SPIKE < fullMax)
             break;
@@ -74,6 +78,8 @@ void treatOut(double* outMagn, int n_out, double time)
 
 
     }
+
+    return fullMaxI;
 
 
 }
@@ -156,12 +162,17 @@ int fft(int const* decoded, int sizeIn, double time)
 
     grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "2.fourierGraph.png");
 
-    treatOut(outMagn, n_out, time);
 
-    for (int i = 128000; i < 128100; ++i)
+
+    ///////////////////TREAT
+
+
+    int maxF = treatOut(outMagn, n_out, time);
+
+    for (int i = maxF - (RANGE_DESTROY * time); i <= maxF + (RANGE_DESTROY * time); ++i)
     {
-        out[i][0] = 0;
-        out[i][1] = 0;
+        out[i][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
+        out[i][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
     }
 
     ///////////////////// ivert FFT
@@ -183,7 +194,7 @@ int fft(int const* decoded, int sizeIn, double time)
     {
         recod[i] = (int)back[i];
     }
-    FILE* f = fopen("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sounds/testirl.wav", "r");
+    FILE* f = fopen("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sounds/b.wav", "r");
     recodeWav(recod, f, sizeIn);
 
 
