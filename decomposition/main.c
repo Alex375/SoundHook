@@ -10,7 +10,7 @@
 
 int main(){
     printf("decomposition of your fat mom\n");
-    FILE * f = openFile("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sounds/b.wav");
+    FILE * f = openFile("/Users/noway/Desktop/S4-Project/SoundHook/file_decoder/sounds/testlowamp.wav");
     WavData * data = decodeWave(f);
     fclose(f);
     printWavHeader(data->header);

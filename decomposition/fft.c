@@ -15,11 +15,11 @@
 
 #define RATIO_DETECT_SPIKE 3
 #define LEN_DETECT_SPIKE 30
-#define NB_MAX 10
+#define NB_MAX 1
 
 #define RANGE_DESTROY 100
 
-int treatOut(double* outMagn, int n_out, double time)
+void treatOut(double* outMagn, int n_out, double time, int* iSpikes)
 {
     /*int inc = 1;
     for (int i = 1; i < n_out; ++i)
@@ -60,9 +60,12 @@ int treatOut(double* outMagn, int n_out, double time)
             fullMaxI = maxI;
             fullMax = outMagn[maxI];
         if(outMagn[maxI] * RATIO_DETECT_SPIKE < fullMax)
+        {
+            iSpikes[i] = -1;
             break;
+        }
 
-
+        iSpikes[i] = maxI;
 
         int f = floor(maxI / time + 0.5);
 
@@ -78,9 +81,6 @@ int treatOut(double* outMagn, int n_out, double time)
 
 
     }
-
-    return fullMaxI;
-
 
 }
 
@@ -166,16 +166,22 @@ int fft(int const* decoded, int sizeIn, double time)
 
     ///////////////////TREAT
 
+    int* iSpikes = malloc(sizeof(int) * NB_MAX);
+    treatOut(outMagn, n_out, time, iSpikes);
 
-    int maxF = treatOut(outMagn, n_out, time);
-
-    for (int i = maxF - (RANGE_DESTROY * time); i <= maxF + (RANGE_DESTROY * time); ++i)
+    int i = 0;
+    while (i < NB_MAX && iSpikes[i] != -1)
     {
-        out[i][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
-        out[i][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
+        for (int j = iSpikes[i] - (RANGE_DESTROY * time); j <= iSpikes[i] + (RANGE_DESTROY * time); ++j)
+        {
+            out[j][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
+            out[j][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
+        }
+        i++;
     }
 
-    ///////////////////// ivert FFT
+
+    ///////////////////// invert FFT
 
 
     fftw_plan ifft;
@@ -194,7 +200,7 @@ int fft(int const* decoded, int sizeIn, double time)
     {
         recod[i] = (int)back[i];
     }
-    FILE* f = fopen("/Users/alexandrejosien/Desktop/SoundHook/file_decoder/sounds/b.wav", "r");
+    FILE* f = fopen("/Users/noway/Desktop/S4-Project/SoundHook/file_decoder/sounds/testlowamp.wav", "r");
     recodeWav(recod, f, sizeIn);
 
 
