@@ -10,6 +10,7 @@
 
 unsigned int littleEndianToBigEndian4(unsigned char* buff);
 unsigned int littleEndianToBigEndian2(unsigned char buff[2]);
+void freeWavData(WavData* data);
 FILE* openFile(const char* file);
 void freadHand(void* ptr, size_t size, size_t nbitem, FILE* file);
 void printAttS(const char * name, unsigned char* value);

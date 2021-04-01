@@ -20,4 +20,5 @@ int main(){
     printf("====Starting decomposition====\n");
     fft(data->data, (int)data->header->num_of_sample, (double)data->header->overall_size/ (double)data->header->byterate, FILE_PATH);
     printf("====Decomposition done====\n");
+    freeWavData(data);
 }

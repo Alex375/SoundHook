@@ -9,6 +9,12 @@
 #include <string.h>
 #include <stdlib.h>
 
+void freeWavData(WavData* data)
+{
+    free(data->header);
+    free(data->data);
+    free(data);
+}
 
 unsigned int littleEndianToBigEndian4(unsigned char* buff)
 {
