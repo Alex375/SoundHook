@@ -1,10 +1,6 @@
 //
 // Created by Alexandre Josien on 10/03/2021.
 //
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/uio.h>
-#include <unistd.h>
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -165,10 +161,10 @@ WavData * decodeWave(FILE* f)
         perror("Malloc failed");
     data->header = decodeWavHeader(f);
     if (data->header == NULL)
-        err(EXIT_FAILURE, "Header docoding failed check format.");
+        err(EXIT_FAILURE, "Header decoding failed check format.");
     data->data = decodeData(f, data->header);
     if(data->data == NULL)
-        err(EXIT_FAILURE, "Data decoding failed chack data.");
+        err(EXIT_FAILURE, "Data decoding failed check data.");
     if (checkHeader(data->header) != 0)
         err(EXIT_FAILURE, "Header checking failed.");
     return data;

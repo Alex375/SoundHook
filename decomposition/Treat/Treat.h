@@ -7,7 +7,7 @@
 
 #define RATIO_DETECT_SPIKE 2
 #define LEN_DETECT_SPIKE 30
-#define NB_MAX 10
+#define NB_MAX 3
 
 #define RANGE_DESTROY 15
 
