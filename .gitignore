@@ -17,3 +17,7 @@ cmake-build-debug/
 
 # Sound file
 *.wav
+
+# Galde temp file
+*~
+\#*#

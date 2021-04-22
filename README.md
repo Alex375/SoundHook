@@ -27,3 +27,17 @@
 | I/O                                 | [+--] | [++-] | [+++] |
 | Interface graphique                 | [---] | [+--] | [+++] |
 | Site Web                            | [++-] | [+++] | [+++] |
+
+## Dependencies
+###FTTW3
+####Install
+```
+$ brew install fftw
+```
+
+
+###GTK3
+####Install
+```
+$ brew install gtk+3
+```
