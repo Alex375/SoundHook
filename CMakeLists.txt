@@ -24,19 +24,16 @@ endif()
 
 add_executable(main main.c)
 
+file(GLOB src_file_decoder file_decoder/*/*/*.c)
+
 file(GLOB src_fft decomposition/*.c)
 file(GLOB src_fft_treat decomposition/Treat/*.c)
-file(GLOB src_decode file_decoder/*.c)
-file(GLOB src_decode_wav file_decoder/wav/*.c)
-file(GLOB src_decode_wav_decode file_decoder/wav/Decoder/*.c)
-file(GLOB src_decode_wav_recode file_decoder/wav/Recoder/*c)
 file(GLOB src_graph GraphTools/*.c)
 file(GLOB src_gui GUI/ui_src/*.c)
 
 set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Werror -pedantic-errors")
 
-add_executable(decoder ${src_decode} ${src_decode_wav})
-add_executable(testfft ${src_fft} ${src_decode} ${src_decode_wav} ${src_graph} ${src_decode_wav_decode} ${src_decode_wav_recode} ${src_fft_treat})
+add_executable(testfft ${src_fft} ${src_file_decoder}  ${src_graph} ${src_fft_treat})
 add_executable(GUI ${src_gui})
 TARGET_LINK_LIBRARIES(GUI ${GTK_LIBRARIES} -lm ${LIBS})
 
