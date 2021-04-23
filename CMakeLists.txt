@@ -29,7 +29,7 @@ file(GLOB src_file_decoder file_decoder/*/*/*.c)
 file(GLOB src_fft decomposition/*.c)
 file(GLOB src_fft_treat decomposition/Treat/*.c)
 file(GLOB src_graph GraphTools/*.c)
-file(GLOB src_gui GUI/ui_src/*.c)
+file(GLOB src_gui GUI/*/*.c)
 
 set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Werror -pedantic-errors")
 

@@ -2,7 +2,7 @@
 // Created by Alexandre Josien on 22/04/2021.
 //
 
-#include "uiTarget.h"
+#include "headers/uiTarget.h"
 #include <gtk/gtk.h>
 #include <err.h>
 
