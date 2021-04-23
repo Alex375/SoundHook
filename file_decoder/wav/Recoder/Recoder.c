@@ -2,14 +2,14 @@
 // Created by Alexandre Josien on 31/03/2021.
 //
 
-#include "Recoder.h"
+#include "headers/Recoder.h"
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../wav.h"
-#include "../WavTools.h"
-#include "../WavChecker.h"
+#include "../types/wav.h"
+#include "../tools/headers/WavTools.h"
+#include "../tools/headers/WavChecker.h"
 
 
 void recodeWav(int* data, FILE* or, long size)

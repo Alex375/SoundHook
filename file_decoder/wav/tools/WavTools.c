@@ -2,8 +2,8 @@
 // Created by Alexandre Josien on 30/03/2021.
 //
 
-#include "WavTools.h"
-#include "wav.h"
+#include "headers/WavTools.h"
+#include "../types/wav.h"
 #include <stdio.h>
 #include <err.h>
 #include <string.h>
@@ -13,6 +13,7 @@ void freeWavData(WavData* data)
 {
     free(data->header);
     free(data->data);
+    free(data->addInfo);
     free(data);
 }
 
@@ -82,8 +83,7 @@ void printWavHeader(WavHeader* header)
     printAttI("Bits per sample", header->bits_per_sample);
     printAttS("Data chunk marker", header->data_chunk_header);
     printAttI("Data chunk size", header->data_size);
-    printf("Number of sample -> %lu\n", header->num_of_sample);
-    printf("Approx duration -> %f s \n",  (float)(header->overall_size) / (float)(header->byterate));
+    printf("Approx duration -> %f s \n",  (float)(header->data_size) / (float)(header->byterate));
 
 
 }
