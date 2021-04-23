@@ -10,6 +10,7 @@
 typedef struct UIData UIData;
 struct UIData {
     GtkWindow *windowMain;
+    GtkWindow *windowProgressBar;
     GtkFileChooserButton *fileChooserBtn;
     GtkCheckButton* fourrier_check;
     GtkCheckButton* wavlet_check;
@@ -18,6 +19,7 @@ struct UIData {
     GtkProgressBar* progress_bar;
     GtkLabel* progress_lbl;
     GtkFileFilter* file_filter;
+    char* filePath;
 };
 
 

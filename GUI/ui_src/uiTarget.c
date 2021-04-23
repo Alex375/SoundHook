@@ -5,21 +5,35 @@
 #include "headers/uiTarget.h"
 #include <gtk/gtk.h>
 #include <err.h>
+#include "../type/types.h"
+#include "../../file_decoder/wav/Decoder/headers/WavDecoder.h"
+#include "../../file_decoder/wav/types/wav.h"
+#include "../../file_decoder/wav/tools/headers/WavTools.h"
+#include "../../decomposition/fft.h"
 
 
-void on_image_choose(GtkFileChooserButton *widget, gpointer filepath)
+void on_file_set(GtkFileChooserButton *widget, gpointer data)
 {
     while (g_main_context_iteration(NULL, FALSE));
+    UIData* uiData = (UIData*)data;
 
-    filepath = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
-    if (filepath == NULL)
-        err(1,"Not enough memory");
+    //TODO : Free old file path
+    //if (uiData->filePath != NULL)
+    //    free(uiData->filePath);
+    uiData->filePath = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
+    if (uiData->filePath == NULL)
+        err(1,"Memory allocation failed");
+    g_print("File path -> %s\n", uiData->filePath);
+}
 
+void on_go_pressed(GtkButton* widget, gpointer data)
+{
+    UIData* uiData = (UIData*)data;
+    g_print("filepath -> %s\n", uiData->filePath);
+    //TODO : Fork to procedures
 
-    //Progress_Set(data->ui.progress_main,0.1,data);
-
-    //g_print("Image loaded\n");
-
-    g_print("File path -> %s\n", filepath);
+    WavData* wavData = decodeWave(uiData->filePath);
+    printWavHeader(wavData->header);
+    fft(wavData->data, wavData->addInfo->num_of_sample, wavData->addInfo->time, uiData->filePath);
 }
 
