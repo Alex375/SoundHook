@@ -21,7 +21,7 @@ UIData* init_data(GtkBuilder* builder)
     data->progress_stop_btn = GTK_BUTTON(gtk_builder_get_object(builder, "stop_btn"));
     data->progress_bar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "progress_bar"));
     data->progress_lbl = GTK_LABEL(gtk_builder_get_object(builder, "state_label"));
-    data->filePath = NULL;
+    data->soundPath = calloc(1, sizeof (char));
 
 
     data->file_filter = gtk_file_filter_new();

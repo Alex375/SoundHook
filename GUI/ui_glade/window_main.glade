@@ -87,7 +87,6 @@
     <property name="title" translatable="yes">Sound Hook launcher</property>
     <property name="default-width">200</property>
     <property name="default-height">200</property>
-    <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
     <child>
       <!-- n-columns=1 n-rows=2 -->
       <object class="GtkGrid">

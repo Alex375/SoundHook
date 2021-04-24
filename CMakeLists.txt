@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.17)
 project(SoundHook C)
 
 
-
-
 set(CMAKE_C_STANDARD 99)
 
 if(APPLE)
@@ -35,9 +33,10 @@ file(GLOB src_graph GraphTools/*.c)
 set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Werror -pedantic-errors")
 
 add_executable(testfft ${src_fft} ${src_file_decoder}  ${src_graph} ${src_fft_treat})
+TARGET_LINK_LIBRARIES(testfft ${FFTW_LIBRARIES})
+
 
 add_executable(GUI ${src_gui} ${src_file_decoder} ${src_fft} ${src_fft_treat} ${src_graph})
 TARGET_LINK_LIBRARIES(GUI ${GTK_LIBRARIES} ${FFTW_LIBRARIES} -lm ${LIBS})
 
-TARGET_LINK_LIBRARIES(testfft ${FFTW_LIBRARIES})
 

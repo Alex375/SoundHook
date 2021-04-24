@@ -19,7 +19,7 @@ struct UIData {
     GtkProgressBar* progress_bar;
     GtkLabel* progress_lbl;
     GtkFileFilter* file_filter;
-    char* filePath;
+    char* soundPath;
 };
 
 

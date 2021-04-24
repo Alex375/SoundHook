@@ -10,6 +10,8 @@
 #include "../../file_decoder/wav/types/wav.h"
 #include "../../file_decoder/wav/tools/headers/WavTools.h"
 #include "../../decomposition/fft.h"
+#include "../ui_tools/headers/UITools.h"
+
 
 
 void on_file_set(GtkFileChooserButton *widget, gpointer data)
@@ -18,22 +20,25 @@ void on_file_set(GtkFileChooserButton *widget, gpointer data)
     UIData* uiData = (UIData*)data;
 
     //TODO : Free old file path
-    //if (uiData->filePath != NULL)
-    //    free(uiData->filePath);
-    uiData->filePath = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
-    if (uiData->filePath == NULL)
+    //if (uiData->soundPath != NULL)
+
+    //free(uiData->soundPath);
+    uiData->soundPath = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
+    if (uiData->soundPath == NULL)
         err(1,"Memory allocation failed");
-    g_print("File path -> %s\n", uiData->filePath);
+    g_print("File path -> %s\n", uiData->soundPath);
 }
 
 void on_go_pressed(GtkButton* widget, gpointer data)
 {
     UIData* uiData = (UIData*)data;
-    g_print("filepath -> %s\n", uiData->filePath);
+    g_print("filepath -> %s\n", uiData->soundPath);
     //TODO : Fork to procedures
 
-    WavData* wavData = decodeWave(uiData->filePath);
+    startProgressBar(uiData);
+    WavData* wavData = decodeWave(uiData->soundPath);
     printWavHeader(wavData->header);
-    fft(wavData->data, wavData->addInfo->num_of_sample, wavData->addInfo->time, uiData->filePath);
+
+    fft(wavData->data, wavData->addInfo->num_of_sample, wavData->addInfo->time, uiData->soundPath);
 }
 
