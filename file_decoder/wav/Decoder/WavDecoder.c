@@ -132,5 +132,6 @@ WavData * decodeWave(FILE* f)
         err(EXIT_FAILURE, "Data decoding failed check data.");
     if (checkHeader(data->header) != 0)
         err(EXIT_FAILURE, "Header checking failed.");
+    //TODO: Decode authors part
     return data;
 }
