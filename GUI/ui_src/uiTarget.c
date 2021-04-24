@@ -7,6 +7,7 @@
 #include <err.h>
 #include "../type/types.h"
 #include "../../file_decoder/wav/Decoder/headers/WavDecoder.h"
+#include "../../file_decoder/wav/Recoder/headers/WavRecoder.h"
 #include "../../file_decoder/wav/types/wav.h"
 #include "../../file_decoder/wav/tools/headers/WavTools.h"
 #include "../../decomposition/fft.h"
@@ -38,7 +39,8 @@ void on_go_pressed(GtkButton* widget, gpointer data)
     startProgressBar(uiData);
     WavData* wavData = decodeWave(uiData->soundPath);
     printWavHeader(wavData->header);
-
-    fft(wavData->data, wavData->addInfo->num_of_sample, wavData->addInfo->time, uiData->soundPath);
+    wavRecoder(wavData, "/Users/alexandrejosien/Desktop/res.wav");
+//    fft(wavData->data, wavData->addInfo->num_of_sample, wavData->addInfo->time, uiData->soundPath);
+    freeWavData(wavData);
 }
 

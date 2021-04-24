@@ -6,7 +6,9 @@
 #define SOUNDHOOK_WAVRECODER_H
 
 #include <stdio.h>
+#include "../../types/wav.h"
 
+int wavRecoder(WavData* data, char* path);
 void recodeWav(int* data, FILE* or, long size);
 
 #endif //SOUNDHOOK_WAVRECODER_H
