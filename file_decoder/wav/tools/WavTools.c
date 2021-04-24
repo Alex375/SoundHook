@@ -35,11 +35,26 @@ FILE* openFile(const char* file)
     return f;
 }
 
+FILE* openNewFile(const char* file)
+{
+    FILE* f = fopen(file, "w+");
+    if (f == NULL)
+        err(EXIT_FAILURE, "Unable to open new file");
+    return f;
+}
+
 void freadHand(void* ptr, size_t size, size_t nbitem, FILE* file)
 {
     size_t res = fread(ptr, size, nbitem, file);
     if (res != nbitem)
         err(EXIT_FAILURE, "Failed to read or read full length.");
+}
+
+void fwriteHand(void* ptr, size_t size, size_t nbitem, FILE* file)
+{
+    size_t res = fwrite(ptr, size, nbitem, file);
+    if (res != nbitem)
+        err(EXIT_FAILURE, "Failed to write or write full length.");
 }
 
 void printAttI(const char * name, int value)
