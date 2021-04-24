@@ -29,15 +29,18 @@
 | Site Web                            | [++-] | [+++] | [+++] |
 
 ## Dependencies
-###FTTW3
-####Install
+
+### FTTW3
+
+#### Install
 ```
-$ brew install fftw
+% brew install fftw
 ```
 
 
-###GTK3
-####Install
+### GTK3
+
+#### Install
 ```
-$ brew install gtk+3
+% brew install gtk+3
 ```

@@ -115,8 +115,12 @@ int* decodeData(FILE* f, WavHeader* header, WavAddInfo* info)
 
 }
 
-WavData * decodeWave(FILE* f)
+
+WavData * decodeWave(char* filePath)
 {
+    if (filePath== NULL)
+        err(EXIT_FAILURE, "No file passed");
+    FILE* f = openFile(filePath);
     WavData* data = malloc(sizeof (WavData));
     if (data == NULL)
         perror("Malloc failed");
@@ -132,6 +136,7 @@ WavData * decodeWave(FILE* f)
         err(EXIT_FAILURE, "Data decoding failed check data.");
     if (checkHeader(data->header) != 0)
         err(EXIT_FAILURE, "Header checking failed.");
+    fclose(f);
     //TODO: Decode authors part
     return data;
 }

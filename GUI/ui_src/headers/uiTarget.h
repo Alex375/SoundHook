@@ -7,6 +7,8 @@
 
 #include <gtk/gtk.h>
 
-void on_image_choose(GtkFileChooserButton *widget, gpointer filepath);
+void on_file_set(GtkFileChooserButton *widget, gpointer filepath);
+void on_go_pressed(GtkButton* widget, gpointer data);
+
 
 #endif //SOUNDHOOK_UITARGET_H

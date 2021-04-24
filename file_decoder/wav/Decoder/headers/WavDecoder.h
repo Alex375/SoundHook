@@ -9,6 +9,6 @@
 
 WavHeader* decodeWavHeader(FILE* f);
 int* decodeData(FILE* f, WavHeader* header, int* res);
-WavData * decodeWave(FILE* f);
+WavData * decodeWave(char* filePath);
 
 #endif //SOUNDHOOK_WAVDECODER_H
