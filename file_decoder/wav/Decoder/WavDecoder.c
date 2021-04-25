@@ -115,6 +115,48 @@ int* decodeData(FILE* f, WavHeader* header, WavAddInfo* info)
 
 }
 
+InfoChunk* decodeInfoChunk(FILE* f)
+{
+    InfoChunk * infoChunk = malloc(sizeof (InfoChunk));
+    if (infoChunk == NULL)
+        err(EXIT_FAILURE, "Memory allocation failed");
+    infoChunk->size = 0;
+    infoChunk->data = malloc(sizeof (char ) * 8);
+    unsigned long read = fread(infoChunk->data, 4, 1, f);
+    if (read != 1 || !checkMarker(infoChunk->data, "LIST"))
+    {
+        free(infoChunk->data);
+        infoChunk->data = NULL;
+        return infoChunk;
+    }
+    read = fread(infoChunk->data + 4, 4, 1, f);
+    if (read != 1)
+    {
+        free(infoChunk->data);
+        infoChunk->data = NULL;
+        return infoChunk;
+    }
+    infoChunk->size = littleEndianToBigEndian4(infoChunk->data + 4);
+    if (infoChunk->size <= 0 || infoChunk->size > 1000)
+        printf("Error info chunk size not safe");
+    infoChunk->size += 8;
+    infoChunk->data = realloc(infoChunk->data, infoChunk->size);
+    read = fread(infoChunk->data + 8, 4, 1, f);
+    if (read != 1 || !checkMarker(infoChunk->data + 8, "INFO"))
+    {
+        free(infoChunk->data);
+        infoChunk->data = NULL;
+        return infoChunk;
+    }
+    read = fread(infoChunk->data + 12, infoChunk->size - 12, 1, f);
+    if (read != 1)
+    {
+        free(infoChunk->data);
+        infoChunk->data = NULL;
+        return infoChunk;
+    }
+    return infoChunk;
+}
 
 WavData * decodeWave(char* filePath)
 {
@@ -128,15 +170,14 @@ WavData * decodeWave(char* filePath)
     data->header = decodeWavHeader(f);
     if (data->header == NULL)
         err(EXIT_FAILURE, "Header decoding failed check format.");
-
+    if (checkHeader(data->header) != 0)
+        err(EXIT_FAILURE, "Header checking failed.");
     data->addInfo = getWavAddInfo(data->header);
 
     data->data = decodeData(f, data->header, data->addInfo);
     if(data->data == NULL)
         err(EXIT_FAILURE, "Data decoding failed check data.");
-    if (checkHeader(data->header) != 0)
-        err(EXIT_FAILURE, "Header checking failed.");
+    data->infoChunk = decodeInfoChunk(f);
     fclose(f);
-    //TODO: Decode authors part
     return data;
 }

@@ -34,12 +34,19 @@ struct WavAddInfo
     float time;
 };
 
+typedef struct InfoChunk InfoChunk;
+struct InfoChunk
+{
+    unsigned char* data;
+    unsigned long size;
+};
 typedef struct WavData WavData;
 struct WavData
 {
     WavHeader* header;
     WavAddInfo* addInfo;
     int * data;
+    InfoChunk * infoChunk;
 };
 
 

@@ -14,6 +14,9 @@ void freeWavData(WavData* data)
     free(data->header);
     free(data->data);
     free(data->addInfo);
+    if (data->infoChunk->data != NULL)
+        free(data->infoChunk->data);
+    free(data->infoChunk);
     free(data);
 }
 

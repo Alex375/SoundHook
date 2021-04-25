@@ -76,6 +76,13 @@ int recodeData(WavData* fileData, FILE* f)
     return 0;
 }
 
+void recodeInfoChunk(InfoChunk* info, FILE* f)
+{
+    if (info->size == 0 || info->data == NULL)
+        return;
+    fwriteHand(info, info->size, 1, f);
+}
+
 void recodeWav(int* data, FILE* or, long size)
 {
 
@@ -101,6 +108,7 @@ int wavRecoder(WavData* data, char* path)
     recodeHeaderRiffChunk(data->header, f);
     recodeHeaderFormatChunk(data->header, f);
     recodeData(data, f);
+    recodeInfoChunk(data->infoChunk, f);
     fclose(f);
 
     return 0;
