@@ -103,5 +103,4 @@ void printWavHeader(WavHeader* header)
     printAttI("Data chunk size", header->data_size);
     printf("Approx duration -> %f s \n",  (float)(header->data_size) / (float)(header->byterate));
 
-
 }

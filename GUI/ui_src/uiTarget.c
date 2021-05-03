@@ -36,11 +36,13 @@ void on_go_pressed(GtkButton* widget, gpointer data)
     g_print("filepath -> %s\n", uiData->soundPath);
     //TODO : Fork to procedures
 
-    startProgressBar(uiData);
+    //startProgressBar(uiData);
     WavData* wavData = decodeWave(uiData->soundPath);
     printWavHeader(wavData->header);
-    wavRecoder(wavData, "/Users/alexandrejosien/Desktop/res.wav");
+    //TODO : Apply procedures
 //    fft(wavData->data, wavData->addInfo->num_of_sample, wavData->addInfo->time, uiData->soundPath);
+    wavRecoder(wavData, "/Users/alexandrejosien/Desktop/res.wav");
+
     freeWavData(wavData);
 }
 

@@ -80,7 +80,7 @@ void recodeInfoChunk(InfoChunk* info, FILE* f)
 {
     if (info->size == 0 || info->data == NULL)
         return;
-    fwriteHand(info, info->size, 1, f);
+    fwriteHand(info->data, info->size, 1, f);
 }
 
 void recodeWav(int* data, FILE* or, long size)
