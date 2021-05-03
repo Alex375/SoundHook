@@ -2,8 +2,8 @@
 // Created by Alexandre Josien on 30/03/2021.
 //
 
-#include "WavTools.h"
-#include "wav.h"
+#include "headers/WavTools.h"
+#include "../types/wav.h"
 #include <stdio.h>
 #include <err.h>
 #include <string.h>
@@ -13,6 +13,10 @@ void freeWavData(WavData* data)
 {
     free(data->header);
     free(data->data);
+    free(data->addInfo);
+    if (data->infoChunk->data != NULL)
+        free(data->infoChunk->data);
+    free(data->infoChunk);
     free(data);
 }
 
@@ -34,11 +38,26 @@ FILE* openFile(const char* file)
     return f;
 }
 
+FILE* openNewFile(const char* file)
+{
+    FILE* f = fopen(file, "w+");
+    if (f == NULL)
+        err(EXIT_FAILURE, "Unable to open new file");
+    return f;
+}
+
 void freadHand(void* ptr, size_t size, size_t nbitem, FILE* file)
 {
     size_t res = fread(ptr, size, nbitem, file);
     if (res != nbitem)
         err(EXIT_FAILURE, "Failed to read or read full length.");
+}
+
+void fwriteHand(void* ptr, size_t size, size_t nbitem, FILE* file)
+{
+    size_t res = fwrite(ptr, size, nbitem, file);
+    if (res != nbitem)
+        err(EXIT_FAILURE, "Failed to write or write full length.");
 }
 
 void printAttI(const char * name, int value)
@@ -82,8 +101,6 @@ void printWavHeader(WavHeader* header)
     printAttI("Bits per sample", header->bits_per_sample);
     printAttS("Data chunk marker", header->data_chunk_header);
     printAttI("Data chunk size", header->data_size);
-    printf("Number of sample -> %lu\n", header->num_of_sample);
-    printf("Approx duration -> %f s \n",  (float)(header->overall_size) / (float)(header->byterate));
-
+    printf("Approx duration -> %f s \n",  (float)(header->data_size) / (float)(header->byterate));
 
 }

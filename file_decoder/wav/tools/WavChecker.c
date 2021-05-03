@@ -2,8 +2,8 @@
 // Created by Alexandre Josien on 30/03/2021.
 //
 
-#include "WavChecker.h"
-#include "wav.h"
+#include "headers/WavChecker.h"
+#include "../types/wav.h"
 #include <stdio.h>
 #include <err.h>
 
@@ -43,7 +43,6 @@ int checkHeader(WavHeader* header)
         printf("Bit per sample error.\n");
         return 4;
     }
-    header->num_of_sample = (8 * header->data_size) / (header->channels * header->bits_per_sample);
     long sample_size = (header->channels * header->bits_per_sample) / 8;
     long byte_in_channel = sample_size / header->channels;
     if(byte_in_channel * header->channels != sample_size)
