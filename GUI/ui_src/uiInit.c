@@ -22,6 +22,8 @@ UIData* init_data(GtkBuilder* builder)
     data->progress_bar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "progress_bar"));
     data->progress_lbl = GTK_LABEL(gtk_builder_get_object(builder, "state_label"));
     data->soundPath = calloc(1, sizeof (char));
+    data->fft_active = 0;
+    data->wavlet_active = 0;
 
 
     data->file_filter = gtk_file_filter_new();
@@ -39,4 +41,6 @@ void setSignal(UIData* data)
     g_signal_connect(data->windowProgressBar, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(data->fileChooserBtn, "file-set", G_CALLBACK(on_file_set), &data);
     g_signal_connect(data->goButton, "pressed", G_CALLBACK(on_go_pressed), &data);
+    g_signal_connect(data->fourrier_check, "toggled", G_CALLBACK(on_check1), &data);
+    g_signal_connect(data->wavlet_check, "toggled", G_CALLBACK(on_check2), &data);
 }
