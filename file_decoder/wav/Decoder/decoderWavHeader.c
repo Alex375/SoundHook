@@ -50,6 +50,7 @@ int decodeWavHeaderFormatChunk(FILE* f, WavHeader* header)
     header->fmt_chunk_marker[3] = '\0';
     if(! checkMarker(header->fmt_chunk_marker, "fmt"))
         return -1;
+    header->fmt_chunk_marker[3] = (unsigned char)32;
     freadHand(buff4, sizeof (char ) * 4, 1, f);
     header->length_of_fmt = littleEndianToBigEndian4(buff4);
     if(header->length_of_fmt != 16)
