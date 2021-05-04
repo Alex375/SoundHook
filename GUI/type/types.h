@@ -6,6 +6,7 @@
 #define SOUNDHOOK_TYPES_H
 
 #include <gtk/gtk.h>
+#include "../../file_decoder/wav/types/wav.h"
 
 typedef struct UIData UIData;
 struct UIData {
@@ -22,7 +23,7 @@ struct UIData {
     int fft_active;
     int wavlet_active;
     char* soundPath;
-
+    WavData * resultData;
 };
 
 

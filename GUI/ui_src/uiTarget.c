@@ -16,6 +16,8 @@
 
 void fft_target(WavData* data);
 void wavelet_target(WavData* data);
+void on_save(UIData * data);
+
 
 void on_file_set(GtkFileChooserButton *widget, gpointer data)
 {
@@ -44,8 +46,6 @@ void on_go_pressed(GtkButton* widget, gpointer data)
     WavData* wavData = decodeWave(uiData->soundPath);
     printWavHeader(wavData->header);
 
-    wavRecoder(wavData, "/Users/alexandrejosien/Desktop/res.wav");
-
     if (uiData->fft_active == 1)
     {
         fft_target(wavData);
@@ -55,8 +55,8 @@ void on_go_pressed(GtkButton* widget, gpointer data)
     {
         wavelet_target(wavData);
     }
-
-    freeWavData(wavData);
+    uiData->resultData = wavData;
+    on_save(uiData);
 }
 
 void on_check1(GtkToggleButton *togglebutton, gpointer user_data)
@@ -90,4 +90,28 @@ void fft_target(WavData* data)
 void wavelet_target(WavData* data)
 {
     wavelet(data);
+}
+
+void on_save(UIData * data)
+{
+//    UIData * data = user_data;
+    GtkWidget* save_file_dialog = gtk_file_chooser_dialog_new ("Save File",
+                                                               data->windowMain,
+                                                               GTK_FILE_CHOOSER_ACTION_SAVE,
+                                                               ("_Cancel"),
+                                                               GTK_RESPONSE_CANCEL,
+                                                               ("_Save"),
+                                                               GTK_RESPONSE_ACCEPT,
+                                                               NULL);
+    GtkFileChooser* save_file_choose = GTK_FILE_CHOOSER(save_file_dialog);
+    gint res = gtk_dialog_run (GTK_DIALOG (save_file_dialog));
+    if (res == GTK_RESPONSE_ACCEPT)
+    {
+        char *path;
+        path = gtk_file_chooser_get_filename(save_file_choose);
+        wavRecoder(data->resultData, path);
+        g_free(path);
+    }
+
+    gtk_widget_destroy (save_file_dialog);
 }

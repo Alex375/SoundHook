@@ -24,7 +24,7 @@ UIData* init_data(GtkBuilder* builder)
     data->soundPath = calloc(1, sizeof (char));
     data->fft_active = 0;
     data->wavlet_active = 0;
-
+    data->resultData = NULL;
 
     data->file_filter = gtk_file_filter_new();
     gtk_file_filter_set_name(data->file_filter, "Sounds");
