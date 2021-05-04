@@ -14,6 +14,9 @@ void freeWavData(WavData* data)
     free(data->header);
     free(data->data);
     free(data->addInfo);
+    if (data->infoChunk->data != NULL)
+        free(data->infoChunk->data);
+    free(data->infoChunk);
     free(data);
 }
 
@@ -99,6 +102,5 @@ void printWavHeader(WavHeader* header)
     printAttS("Data chunk marker", header->data_chunk_header);
     printAttI("Data chunk size", header->data_size);
     printf("Approx duration -> %f s \n",  (float)(header->data_size) / (float)(header->byterate));
-
 
 }

@@ -70,18 +70,18 @@ int* decodeData(FILE* f, WavHeader* header, WavAddInfo* info)
             short temp;
             switch (info->byte_in_channel) {
                 case 1:
-                    data = data_buffer[chan * info->byte_in_channel] & 0x00ff;
+                    data = data_buffer[chan * info->byte_in_channel] & 0x000000ff;
                     data -= 128;
                     break;
                 case 2:
-                    temp = (data_buffer[chan * info->byte_in_channel] & 0x00ff) |
-                                 ((data_buffer[chan * info->byte_in_channel + 1] & 0x00ff)<<8);
+                    temp = (data_buffer[chan * info->byte_in_channel] & 0x000000ff) |
+                                 ((data_buffer[chan * info->byte_in_channel + 1] & 0x000000ff)<<8);
                     data = temp;
                     break;
                 case 3 :
-                    data = ((data_buffer[chan * info->byte_in_channel] & 0x00ff) |
-                            ((data_buffer[chan * info->byte_in_channel + 1] & 0x00ff) << 8) |
-                            ((data_buffer[chan * info->byte_in_channel + 2] & 0x00ff) << 16));
+                    data = ((data_buffer[chan * info->byte_in_channel] & 0x000000ff) |
+                            ((data_buffer[chan * info->byte_in_channel + 1] & 0x000000ff) << 8) |
+                            ((data_buffer[chan * info->byte_in_channel + 2] & 0x000000ff) << 16));
                     if (data > info->high_limit)
                     {
                         data ^= 0x00ffffff;
@@ -92,10 +92,10 @@ int* decodeData(FILE* f, WavHeader* header, WavAddInfo* info)
                     }
                     break;
                 case 4:
-                    data = (data_buffer[chan * info->byte_in_channel] & 0x00ff) |
-                           ((data_buffer[chan * info->byte_in_channel + 1] & 0x00ff) << 8) |
-                           ((data_buffer[chan * info->byte_in_channel + 2] & 0x00ff) << 16) |
-                           ((data_buffer[chan * info->byte_in_channel + 3] & 0x00ff) << 24);
+                    data = (data_buffer[chan * info->byte_in_channel] & 0x000000ff) |
+                           ((data_buffer[chan * info->byte_in_channel + 1] & 0x000000ff) << 8) |
+                           ((data_buffer[chan * info->byte_in_channel + 2] & 0x000000ff) << 16) |
+                           ((data_buffer[chan * info->byte_in_channel + 3] & 0x000000ff) << 24);
                     break;
                 default:
                     err(1, "Byte in channel error");
@@ -115,6 +115,48 @@ int* decodeData(FILE* f, WavHeader* header, WavAddInfo* info)
 
 }
 
+InfoChunk* decodeInfoChunk(FILE* f)
+{
+    InfoChunk * infoChunk = malloc(sizeof (InfoChunk));
+    if (infoChunk == NULL)
+        err(EXIT_FAILURE, "Memory allocation failed");
+    infoChunk->size = 0;
+    infoChunk->data = malloc(sizeof (char ) * 8);
+    unsigned long read = fread(infoChunk->data, 4, 1, f);
+    if (read != 1 || !checkMarker(infoChunk->data, "LIST"))
+    {
+        free(infoChunk->data);
+        infoChunk->data = NULL;
+        return infoChunk;
+    }
+    read = fread(infoChunk->data + 4, 4, 1, f);
+    if (read != 1)
+    {
+        free(infoChunk->data);
+        infoChunk->data = NULL;
+        return infoChunk;
+    }
+    infoChunk->size = littleEndianToBigEndian4(infoChunk->data + 4);
+    if (infoChunk->size <= 0 || infoChunk->size > 1000)
+        printf("Error info chunk size not safe");
+    infoChunk->size += 8;
+    infoChunk->data = realloc(infoChunk->data, infoChunk->size);
+    read = fread(infoChunk->data + 8, 4, 1, f);
+    if (read != 1 || !checkMarker(infoChunk->data + 8, "INFO"))
+    {
+        free(infoChunk->data);
+        infoChunk->data = NULL;
+        return infoChunk;
+    }
+    read = fread(infoChunk->data + 12, infoChunk->size - 12, 1, f);
+    if (read != 1)
+    {
+        free(infoChunk->data);
+        infoChunk->data = NULL;
+        return infoChunk;
+    }
+    return infoChunk;
+}
 
 WavData * decodeWave(char* filePath)
 {
@@ -128,15 +170,14 @@ WavData * decodeWave(char* filePath)
     data->header = decodeWavHeader(f);
     if (data->header == NULL)
         err(EXIT_FAILURE, "Header decoding failed check format.");
-
+    if (checkHeader(data->header) != 0)
+        err(EXIT_FAILURE, "Header checking failed.");
     data->addInfo = getWavAddInfo(data->header);
 
     data->data = decodeData(f, data->header, data->addInfo);
     if(data->data == NULL)
         err(EXIT_FAILURE, "Data decoding failed check data.");
-    if (checkHeader(data->header) != 0)
-        err(EXIT_FAILURE, "Header checking failed.");
+    data->infoChunk = decodeInfoChunk(f);
     fclose(f);
-    //TODO: Decode authors part
     return data;
 }
