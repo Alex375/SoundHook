@@ -12,6 +12,7 @@
 #include "../../file_decoder/wav/tools/headers/WavTools.h"
 #include "../../decomposition/fft.h"
 #include "../ui_tools/headers/UITools.h"
+#include "../../wavlet/headers/Wavelet.h"
 
 void fft_target(WavData* data);
 void wavelet_target(WavData* data);
@@ -88,5 +89,5 @@ void fft_target(WavData* data)
 
 void wavelet_target(WavData* data)
 {
-    g_print("Wavelet\n");
+    wavelet(data);
 }
