@@ -7,5 +7,7 @@
 #include <stdlib.h>
 
 void grapher(double* xs, double* ys, size_t xlen, size_t ylen, char* name);
+void grapherSize(double* xs, double* ys, double width, double height, size_t xlen, size_t ylen, char* name);
+
 
 #endif //SOUNDHOOK_GRAPH_H
