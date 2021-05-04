@@ -23,15 +23,9 @@ void on_file_set(GtkFileChooserButton *widget, gpointer data)
 {
     while (g_main_context_iteration(NULL, FALSE));
     UIData* uiData = (UIData*)data;
-
     //TODO : Free old file path
-    //if (uiData->soundPath != NULL)
 
-    //free(uiData->soundPath);
     uiData->soundPath = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
-//    if (uiData->soundPath == NULL)
-//        err(1,"Memory allocation failed");
-//    g_print("File path -> %s\n", uiData->soundPath);
 
 
 }
@@ -94,7 +88,6 @@ void wavelet_target(WavData* data)
 
 void on_save(UIData * data)
 {
-//    UIData * data = user_data;
     GtkWidget* save_file_dialog = gtk_file_chooser_dialog_new ("Save File",
                                                                data->windowMain,
                                                                GTK_FILE_CHOOSER_ACTION_SAVE,
