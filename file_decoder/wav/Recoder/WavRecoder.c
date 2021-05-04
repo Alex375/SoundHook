@@ -23,7 +23,6 @@ int recodeHeaderRiffChunk(WavHeader* data, FILE* f)
 
 int recodeHeaderFormatChunk(WavHeader* data, FILE* f)
 {
-    data->fmt_chunk_marker[3] = '\32';
     fwriteHand(data->fmt_chunk_marker, 4, 1, f);
     fwriteHand(&(data->length_of_fmt), 4, 1, f);
     unsigned short temp = (unsigned short)(data->format_type);
@@ -108,7 +107,7 @@ int wavRecoder(WavData* data, char* path)
     recodeHeaderRiffChunk(data->header, f);
     recodeHeaderFormatChunk(data->header, f);
     recodeData(data, f);
-    recodeInfoChunk(data->infoChunk, f);
+    //recodeInfoChunk(data->infoChunk, f);
     fclose(f);
 
     return 0;
