@@ -21,14 +21,32 @@ struct WavHeader
     unsigned int bits_per_sample;               // bits per sample, 8- 8bits, 16- 16 bits etc
     unsigned char data_chunk_header [4];        // DATA string or FLLR string
     unsigned int data_size;                     // NumSamples * NumChannels * BitsPerSample/8 - size of the next chunk that will be read
-    unsigned long num_of_sample;                         // Number of sample
 };
 
+typedef struct WavAddInfo WavAddInfo;
+struct WavAddInfo
+{
+    long num_of_sample;
+    long sample_size;
+    long byte_in_channel;
+    long low_limit;
+    long high_limit;
+    float time;
+};
+
+typedef struct InfoChunk InfoChunk;
+struct InfoChunk
+{
+    unsigned char* data;
+    unsigned long size;
+};
 typedef struct WavData WavData;
 struct WavData
 {
     WavHeader* header;
+    WavAddInfo* addInfo;
     int * data;
+    InfoChunk * infoChunk;
 };
 
 

@@ -11,7 +11,7 @@
 #include "Treat/Treat.h"
 #include </usr/local/include/fftw3.h>
 #include "../GraphTools/Graph.h"
-#include "../file_decoder/wav/Recoder/Recoder.h"
+#include "../file_decoder/wav/Recoder/headers/WavRecoder.h"
 
 
 
