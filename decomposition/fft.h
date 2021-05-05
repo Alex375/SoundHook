@@ -9,6 +9,6 @@
 //void fft(double *reel, double *imag, int log2n, int sign);
 
 
-int fft(int const* decoded, int sizeIn, double time, const char* opener);
+int fft(int const* decoded, int sizeIn, double time, const char* opener, double* sliderValues, int SVlen, char * mode);
 
 #endif //SOUNDHOOK_FFT_H

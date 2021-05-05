@@ -9,19 +9,14 @@
 #include <stdio.h>
 #include <math.h>
 #include "Treat/Treat.h"
+#include "Treat/equalizer.h"
 #include </usr/local/include/fftw3.h>
 #include "../GraphTools/Graph.h"
 #include "../file_decoder/wav/Recoder/headers/WavRecoder.h"
 
 
 
-
-
-
-
-// fft init
-// real numbers in
-int fft(int const* decoded, int sizeIn, double time, const char* opener)
+int fft(int const* decoded, int sizeIn, double time, const char* opener, double* sliderValues, int SVlen, char * mode)
 {
     double * in  = (double*)fftw_malloc(sizeof(double) * sizeIn);
     for (int i = 0; i < sizeIn; ++i)
@@ -90,21 +85,38 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener)
 
     ///////////////////TREAT
 
-    int* iSpikes = malloc(sizeof(int) * NB_MAX);
-    treatOut(outMagn, n_out, time, iSpikes);
-
+    if (mode[0] = 'E')
     {
-        int i = 0;
-        while (i < NB_MAX && iSpikes[i] != -1)
+        double * coefs = malloc(sizeof(double) * n_out);
+        equalizer(coefs, n_out, sliderValues, SVlen, mode[1]);
+
+        for (int i = 0; i < n_out; ++i)
         {
-            for (int j = iSpikes[i] - (RANGE_DESTROY * (int)time); j <= iSpikes[i] + (RANGE_DESTROY * (int)time); ++j)
-            {
-                out[j][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
-                out[j][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
-            }
-            i++;
+            out[i][0] *= coefs[i];
+            out[i][1] *= coefs[i];
         }
     }
+    else
+    {
+        int* iSpikes = malloc(sizeof(int) * NB_MAX);
+        treatOut(outMagn, n_out, time, iSpikes);
+
+        {
+            int i = 0;
+            while (i < NB_MAX && iSpikes[i] != -1)
+            {
+                for (int j = iSpikes[i] - (RANGE_DESTROY * (int)time); j <= iSpikes[i] + (RANGE_DESTROY * (int)time); ++j)
+                {
+                    out[j][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
+                    out[j][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
+                }
+                i++;
+            }
+        }
+
+        free(iSpikes);
+    }
+
 
 
 
@@ -170,6 +182,5 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener)
     fftw_destroy_plan(plan_forward);
     fftw_free(in); fftw_free(out);
     free(outMagn);
-    free(iSpikes);
     return 0;
 }
