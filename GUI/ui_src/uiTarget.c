@@ -49,8 +49,6 @@ void on_file_set(GtkFileChooserButton *widget, gpointer data)
     free(xIn);
     free(in);
     gtk_image_set_from_file(GTK_IMAGE(uiData->soundViewer), ".start.png");
-    for (size_t i = 0; i < 5; i++)
-        uiData->equalizerValue[i] = 100;
     uiData->equalizerMode = 1;
 }
 
