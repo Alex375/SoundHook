@@ -27,12 +27,11 @@ int main(int argc, char** argv)
     setSignal(uiData);
 
     gtk_builder_connect_signals(builder, NULL);
+    g_object_unref(builder);
 
     gtk_widget_show(GTK_WIDGET(uiData->windowMain));
-    gtk_image_set_from_file(uiData->soundViewer, ".start.png");
     gtk_main();
 
-    g_object_unref(builder);
 
     /////////FREE
     free(uiData);

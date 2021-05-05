@@ -14,25 +14,15 @@
 #include </usr/local/include/fftw3.h>
 #include "../GraphTools/Graph.h"
 #include "../file_decoder/wav/Recoder/headers/WavRecoder.h"
+#include "../GUI/type/types.h"
 
 int* fft(WavData* data, double* sliderValues, int treat, int equa);
 
-void fftCall(WavData* data)
+void fftCall(UIData * uiData)
 {
-    double * sliderValues = malloc(sizeof(double) * SVlen);
-    for (int i = 0; i < SVlen; ++i) {
-        sliderValues[i] = i;
-    }
-    /*
-    sliderValues[0] = 10;
-    sliderValues[1] = 10;
-    sliderValues[2] = 1;
-    sliderValues[3] = 1;
-    sliderValues[4] = 1;*/
-
-    int* res = fft(data, sliderValues, 0, 1);
-    free(data->data);
-    data->data = res;
+    int* res = fft(uiData->soundData, uiData->equalizerValue, uiData->fft_active, uiData->equalizerMode);
+    free(uiData->soundData->data);
+    uiData->soundData->data = res;
 }
 
 

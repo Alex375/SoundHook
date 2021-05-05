@@ -15,7 +15,6 @@
 #include "../../wavlet/headers/Wavelet.h"
 #include "../../GraphTools/Graph.h"
 
-void fft_target(WavData* data);
 void wavelet_target(WavData* data);
 
 
@@ -44,20 +43,15 @@ void on_file_set(GtkFileChooserButton *widget, gpointer data)
     for (int i = 0; i < dataSize; ++i)
     {
         in[i] = ((double)uiData->soundData->data[i]) ;
-        //printf("%f\n", in[i]);
     }
     grapherSize(xIn, in, 700, 350, dataSize, dataSize, ".start.png");
-    /*GError *error = NULL;
-    GdkPixbuf * pixBuf = gdk_pixbuf_new_from_file(".start.png", &error);
-    if (pixBuf == NULL) {
-        g_printerr ("Error loading file: #%d %s\n", error->code, error->message);
-        g_error_free (error);
-        exit (1);
-    }*/
+
     free(xIn);
     free(in);
-    //gtk_image_set_from_pixbuf(GTK_IMAGE(uiData->soundViewer), GDK_PIXBUF(pixBuf));
-    //gtk_image_set_from_file(GTK_IMAGE(uiData->soundViewer), ".start.png");
+    gtk_image_set_from_file(GTK_IMAGE(uiData->soundViewer), ".start.png");
+    for (size_t i = 0; i < 5; i++)
+        uiData->equalizerValue[i] = 100;
+    uiData->equalizerMode = 0;
 }
 
 void on_go_pressed(GtkButton* widget, gpointer data)
@@ -65,17 +59,42 @@ void on_go_pressed(GtkButton* widget, gpointer data)
     UIData* uiData = (UIData*)data;
     //TODO : Fork to procedures
 
+    gtk_widget_show(GTK_WIDGET(uiData->windowProgressBar));
 
-
-    if (uiData->fft_active == 1)
+    short eqactive = 0;
+    for (size_t i = 0; i < 5; i++)
     {
-        fft_target(uiData->soundData);
+        if (uiData->equalizerValue[i] != 100)
+            eqactive = 1;
     }
+    if (!eqactive)
+        uiData->equalizerMode = 0;
+
+    fftCall(uiData);
+
 
     if (uiData->wavlet_active == 1)
     {
         wavelet_target(uiData->soundData);
     }
+    long dataSize = uiData->soundData->addInfo->num_of_sample;
+    double * xIn = malloc(sizeof (double) * dataSize);
+    for (size_t i = 0; i < dataSize; i++)
+    {
+        xIn[i] = (double)i;
+    }
+    double * in  = malloc(sizeof (double) * dataSize);
+    if (in == NULL)
+        err(EXIT_FAILURE, "Memory allocation failed");
+    for (int i = 0; i < dataSize; ++i)
+    {
+        in[i] = ((double)uiData->soundData->data[i]) ;
+    }
+    grapherSize(xIn, in, 700, 350, dataSize, dataSize, ".res.png");
+
+    free(xIn);
+    free(in);
+    gtk_image_set_from_file(GTK_IMAGE(uiData->soundViewer), ".res.png");
 }
 
 void on_check1(GtkToggleButton *togglebutton, gpointer user_data)
@@ -100,11 +119,6 @@ void on_check2(GtkToggleButton *togglebutton, gpointer user_data)
     }
 }
 
-void fft_target(WavData* data)
-{
-    fftCall(data);
-    g_print("fft\n");
-}
 
 void wavelet_target(WavData* data)
 {
@@ -133,4 +147,17 @@ void on_save(GtkFileChooserButton *widget, gpointer user_data)
     }
 
     gtk_widget_destroy (save_file_dialog);
+}
+
+void onLaunchEqualizer(GtkFileChooserButton *widget, gpointer user_data)
+{
+    UIData* data = (UIData*)user_data;
+    gtk_widget_show(GTK_WIDGET(data->windowEqualizer));
+}
+
+
+void onEqualizerModeChanged(GtkComboBox *widget, gpointer user_data)
+{
+    UIData* data = (UIData*)user_data;
+    data->equalizerMode = gtk_combo_box_get_active(widget) + 1;
 }
