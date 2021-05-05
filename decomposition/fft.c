@@ -133,8 +133,8 @@ int* fft(WavData* data, double* sliderValues, int treat, int equa)
 
         for (int i = 0; i < n_out; ++i)
         {
-            out[i][0] *= coefs[i];
-            out[i][1] *= coefs[i];
+            out[i][0] *= coefs[i] / 100;
+            out[i][1] *= coefs[i] / 100;
         }
     }
 

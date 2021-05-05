@@ -20,7 +20,9 @@ int equalizer(double* coefs, int n_out, double* sliderValues, double time, int m
     double log2of20000 = log2(20000);
     for (int i = 0; i < n_out; ++i)
     {
-        int sectionN = (int)(((log2((double)i / time  + 1)- 1) * decreaseExposent * (double)SVlen) / log2of20000 ) - 1;
+        int sectionN = 0;
+        if ((double)i / time - 105 > 0)
+            sectionN = (int)(((log2((double)i / time - 105)- 1) * decreaseExposent * (double)SVlen) / log2of20000 ) - 1;
 
         if (sectionN < 0)
             sectionN = 0;
