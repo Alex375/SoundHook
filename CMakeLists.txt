@@ -38,7 +38,7 @@ file(GLOB src_wavelib wavelib/src/*c)
 
 #set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Werror -pedantic-errors")
 
-add_executable(testfft ${src_fft} ${src_file_decoder}  ${src_graph} ${src_fft_treat})
+add_executable(testfft ${src_fft} ${src_file_decoder}  ${src_graph} ${src_fft_treat} decomposition/Treat/equalizer.c decomposition/Treat/equalizer.h)
 TARGET_LINK_LIBRARIES(testfft ${FFTW_LIBRARIES})
 
 

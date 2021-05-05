@@ -47,9 +47,14 @@ int decodeWavHeaderFormatChunk(FILE* f, WavHeader* header)
     unsigned char* buff2 = malloc(sizeof (char) * 2);
 
     freadHand(header->fmt_chunk_marker, sizeof (header->fmt_chunk_marker), 1, f);
-    header->fmt_chunk_marker[3] = '\0';
-    if(! checkMarker(header->fmt_chunk_marker, "fmt"))
+    char* fmt = malloc(sizeof (char) * 4);
+    fmt[0] = 'f';
+    fmt[1] = 'm';
+    fmt[2] = 't';
+    fmt[3] = 32;
+    if(! checkMarker(header->fmt_chunk_marker, fmt))
         return -1;
+    free(fmt);
     header->fmt_chunk_marker[3] = (unsigned char)32;
     freadHand(buff4, sizeof (char ) * 4, 1, f);
     header->length_of_fmt = littleEndianToBigEndian4(buff4);

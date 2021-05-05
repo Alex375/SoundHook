@@ -27,11 +27,11 @@ int main(int argc, char** argv)
     setSignal(uiData);
 
     gtk_builder_connect_signals(builder, NULL);
+    g_object_unref(builder);
 
     gtk_widget_show(GTK_WIDGET(uiData->windowMain));
     gtk_main();
 
-    g_object_unref(builder);
 
     /////////FREE
     free(uiData);
