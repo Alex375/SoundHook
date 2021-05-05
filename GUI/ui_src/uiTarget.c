@@ -57,7 +57,7 @@ void on_file_set(GtkFileChooserButton *widget, gpointer data)
     free(xIn);
     free(in);
     //gtk_image_set_from_pixbuf(GTK_IMAGE(uiData->soundViewer), GDK_PIXBUF(pixBuf));
-    gtk_image_set_from_file(GTK_IMAGE(uiData->soundViewer), ".start.png");
+    //gtk_image_set_from_file(GTK_IMAGE(uiData->soundViewer), ".start.png");
 }
 
 void on_go_pressed(GtkButton* widget, gpointer data)
@@ -102,7 +102,7 @@ void on_check2(GtkToggleButton *togglebutton, gpointer user_data)
 
 void fft_target(WavData* data)
 {
-    //    fft(wavData->data, wavData->addInfo->num_of_sample, wavData->addInfo->time, uiData->soundPath);
+    fftCall(data);
     g_print("fft\n");
 }
 
@@ -113,7 +113,7 @@ void wavelet_target(WavData* data)
 
 void on_save(GtkFileChooserButton *widget, gpointer user_data)
 {
-//    UIData * data = user_data;
+    UIData * data = user_data;
     GtkWidget* save_file_dialog = gtk_file_chooser_dialog_new ("Save File",
                                                                data->windowMain,
                                                                GTK_FILE_CHOOSER_ACTION_SAVE,

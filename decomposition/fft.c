@@ -8,20 +8,43 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include "Treat/Treat.h"
 #include "Treat/equalizer.h"
 #include </usr/local/include/fftw3.h>
 #include "../GraphTools/Graph.h"
 #include "../file_decoder/wav/Recoder/headers/WavRecoder.h"
 
+int* fft(WavData* data, double* sliderValues, int treat, int equa);
 
-
-int fft(int const* decoded, int sizeIn, double time, const char* opener, double* sliderValues, int SVlen, char * mode)
+void fftCall(WavData* data)
 {
+    double * sliderValues = malloc(sizeof(double) * SVlen);
+    for (int i = 0; i < SVlen; ++i) {
+        sliderValues[i] = i;
+    }
+    /*
+    sliderValues[0] = 10;
+    sliderValues[1] = 10;
+    sliderValues[2] = 1;
+    sliderValues[3] = 1;
+    sliderValues[4] = 1;*/
+
+    int* res = fft(data, sliderValues, 0, 1);
+    free(data->data);
+    data->data = res;
+}
+
+
+int* fft(WavData* data, double* sliderValues, int treat, int equa)
+{
+    int sizeIn = data->addInfo->num_of_sample;
+    double time = data->addInfo->time;
+
     double * in  = (double*)fftw_malloc(sizeof(double) * sizeIn);
     for (int i = 0; i < sizeIn; ++i)
     {
-        in[i] = ((double)decoded[i]) ;
+        in[i] = ((double)data->data[i]) ;
         //printf("%f\n", in[i]);
     }
 
@@ -85,18 +108,7 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener, double*
 
     ///////////////////TREAT
 
-    if (mode[0] = 'E')
-    {
-        double * coefs = malloc(sizeof(double) * n_out);
-        equalizer(coefs, n_out, sliderValues, SVlen, mode[1]);
-
-        for (int i = 0; i < n_out; ++i)
-        {
-            out[i][0] *= coefs[i];
-            out[i][1] *= coefs[i];
-        }
-    }
-    else
+    if (treat)
     {
         int* iSpikes = malloc(sizeof(int) * NB_MAX);
         treatOut(outMagn, n_out, time, iSpikes);
@@ -117,7 +129,24 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener, double*
         free(iSpikes);
     }
 
+    if (equa)
+    {
+        double * coefs = malloc(sizeof(double) * n_out);
+        int min = n_out;
 
+        equalizer(coefs, min, sliderValues, data->addInfo->time, equa);
+
+        printf("\nCoefs are : \n");
+        for (int i = 0; i < n_out / 100; ++i) {
+            printf("%f  %d\n", coefs[i * 100], i * 100 / (int)data->addInfo->time);
+        }
+
+        for (int i = 0; i < n_out; ++i)
+        {
+            out[i][0] *= coefs[i];
+            out[i][1] *= coefs[i];
+        }
+    }
 
 
     ///////////////////// invert FFT
@@ -139,8 +168,7 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener, double*
     {
         recod[i] = (int)back[i];
     }
-    FILE* f = fopen(opener, "r");
-    recodeWav(recod, f, sizeIn);
+
 
 
     grapher(xIn, back, (size_t)sizeIn, (size_t)sizeIn, "3.corrected.png");
@@ -182,5 +210,6 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener, double*
     fftw_destroy_plan(plan_forward);
     fftw_free(in); fftw_free(out);
     free(outMagn);
-    return 0;
+
+    return recod;
 }

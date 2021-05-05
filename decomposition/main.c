@@ -1,4 +1,4 @@
-
+/*
 //Created by Noé Bonne on 3/11/21.
 
 #include <stdio.h>
@@ -29,3 +29,4 @@ int main(){
     printf("====Decomposition done====\n");
     freeWavData(data);
 }
+*/

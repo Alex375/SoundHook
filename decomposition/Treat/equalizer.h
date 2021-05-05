@@ -5,6 +5,9 @@
 #ifndef SOUNDHOOK_EQUALIZER_H
 #define SOUNDHOOK_EQUALIZER_H
 
-int equalizer(double* coefs, int n_out, double* sliderValues, int SVlen, char* mode);
+#define SVlen 5
+
+
+int equalizer(double* coefs, int n_out, double* sliderValues, double time, int mode);
 
 #endif //SOUNDHOOK_EQUALIZER_H
