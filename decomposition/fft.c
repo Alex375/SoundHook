@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+#include "fft.h"
 #include "Treat/Treat.h"
 #include "Treat/equalizer.h"
 #include </usr/local/include/fftw3.h>
@@ -16,7 +17,6 @@
 #include "../file_decoder/wav/Recoder/headers/WavRecoder.h"
 #include "../GUI/type/types.h"
 
-int* fft(WavData* data, double* sliderValues, int treat, int equa);
 
 void fftCall(UIData * uiData)
 {
@@ -124,12 +124,12 @@ int* fft(WavData* data, double* sliderValues, int treat, int equa)
         double * coefs = malloc(sizeof(double) * n_out);
         int min = n_out;
 
-        equalizer(coefs, min, sliderValues, data->addInfo->time, equa);
+        equalizer(coefs, min, sliderValues, data->addInfo->time, (double)data->header->sample_rate, equa);
 
-        printf("\nCoefs are : \n");
-        for (int i = 0; i < n_out / 100; ++i) {
-            printf("%f  %d\n", coefs[i * 100], i * 100 / (int)data->addInfo->time);
-        }
+        //printf("\nCoefs are : \n");
+        //for (int i = 0; i < n_out / 100; ++i) {
+        //    printf("%f  %d\n", coefs[i * 100], i * 100 / (int)data->addInfo->time);
+        //}
 
         for (int i = 0; i < n_out; ++i)
         {
