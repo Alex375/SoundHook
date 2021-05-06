@@ -20,21 +20,69 @@
 
 void fftCall(UIData * uiData)
 {
-    int* res = fft(uiData->soundData, uiData->equalizerValue, uiData->fft_active, uiData->equalizerMode);
+    if (uiData->fft_active)
+    {
+        long num_of_sample = uiData->soundData->addInfo->num_of_sample;
+        long sample_rate = uiData->soundData->header->sample_rate;
+
+        int div = fabs((double)num_of_sample / (double)(sample_rate * STFFTDuration) + 0.4);
+        if (div < 1)
+            div = 1;
+        long partLen = num_of_sample / div;
+
+        long i = 0;
+        while (i < div)
+        {
+            int len = partLen;
+            if (i == div - 1)
+                len = num_of_sample - i * partLen;
+
+            printf("decompose fft nb %l\n", i);
+
+            int * data = &uiData->soundData->data[i * partLen];
+            int* res = fft(data,
+                           len,
+                           uiData->soundData->header->sample_rate,
+                           uiData->equalizerValue,
+                           2,
+                           0);
+
+            for (int j = 0; j < len; ++j)
+            {
+                data[j] = res[j];
+            }
+
+            i++;
+        }
+
+
+
+        uiData->fft_active = 0;
+    }
+
+
+    int* res = fft(uiData->soundData->data,
+                   uiData->soundData->addInfo->num_of_sample,
+                   uiData->soundData->header->sample_rate,
+                   uiData->equalizerValue,
+                   uiData->fft_active,
+                   uiData->equalizerMode);
+    // ->fft_active : 0=No   1 = yes with plots   2 = yes without plot
+    // ->equalizerMode : 0=No   1 = yes threshold hard     2 = yes treshold soft
+
     free(uiData->soundData->data);
     uiData->soundData->data = res;
 }
 
 
-int* fft(WavData* data, double* sliderValues, int treat, int equa)
+int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat, int equa)
 {
-    int sizeIn = data->addInfo->num_of_sample;
-    double time = data->addInfo->time;
+    double time = (double)sizeIn / (double)sample_rate;
 
     double * in  = (double*)fftw_malloc(sizeof(double) * sizeIn);
     for (int i = 0; i < sizeIn; ++i)
     {
-        in[i] = ((double)data->data[i]) ;
+        in[i] = ((double)data[i]) ;
         //printf("%f\n", in[i]);
     }
 
@@ -43,8 +91,8 @@ int* fft(WavData* data, double* sliderValues, int treat, int equa)
     {
         xIn[i] = (double)i;
     }
-
-    grapher(xIn, in, (size_t)sizeIn, (size_t)sizeIn, "1.original.png");
+    if (equa || treat < 2)
+        grapher(xIn, in, (size_t)sizeIn, (size_t)sizeIn, "1.original.png");
 
 
 
@@ -86,13 +134,15 @@ int* fft(WavData* data, double* sliderValues, int treat, int equa)
 
     }
 
+
     double * xs = malloc(sizeof (double) * n_out);
     for (size_t i = 0; i < n_out; i++)
     {
         xs[i] = (double)i / time;
     }
 
-    grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "2.fourierGraph.png");
+    if (equa || treat < 2)
+        grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "2.fourierGraph.png");
 
 
 
@@ -124,7 +174,7 @@ int* fft(WavData* data, double* sliderValues, int treat, int equa)
         double * coefs = malloc(sizeof(double) * n_out);
         int min = n_out;
 
-        equalizer(coefs, min, sliderValues, data->addInfo->time, (double)data->header->sample_rate, equa);
+        equalizer(coefs, min, sliderValues, time, (double)sample_rate, equa);
 
         //printf("\nCoefs are : \n");
         //for (int i = 0; i < n_out / 100; ++i) {
@@ -160,8 +210,8 @@ int* fft(WavData* data, double* sliderValues, int treat, int equa)
     }
 
 
-
-    grapher(xIn, back, (size_t)sizeIn, (size_t)sizeIn, "3.corrected.png");
+    if (equa || treat < 2)
+        grapher(xIn, back, (size_t)sizeIn, (size_t)sizeIn, "3.corrected.png");
 
 
     ////////////////VERIF FFT
@@ -188,7 +238,8 @@ int* fft(WavData* data, double* sliderValues, int treat, int equa)
     {
         outMagn[i] = outMagn[i]/max*1000;
     }
-    grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "4.2nd_fourier_verif.png");
+    if (equa || treat < 2)
+        grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "4.2nd_fourier_verif.png");
 
 
 
