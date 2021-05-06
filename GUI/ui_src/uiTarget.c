@@ -50,7 +50,6 @@ void on_file_set(GtkFileChooserButton *widget, gpointer data)
     free(xIn);
     free(in);
     gtk_image_set_from_file(GTK_IMAGE(uiData->soundViewer), ".start.png");
-    uiData->equalizerMode = 1;
 }
 
 void on_go_pressed(GtkButton* widget, gpointer data)
@@ -70,7 +69,7 @@ void on_go_pressed(GtkButton* widget, gpointer data)
         uiData->equalizerMode = 0;
 
     if(uiData->fft_active || uiData->equalizerMode)
-    fftCall(uiData);
+        fftCall(uiData);
 
 
     if (uiData->wavlet_active == 1)
