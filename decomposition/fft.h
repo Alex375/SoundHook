@@ -5,7 +5,7 @@
 #ifndef SOUNDHOOK_FFT_H
 #define SOUNDHOOK_FFT_H
 
-#define STFFTDuration 2
+#define STFFTDuration 1
 //void fft(double *reel, double *imag, int log2n, int sign);
 #include "../GUI/type/types.h"
 

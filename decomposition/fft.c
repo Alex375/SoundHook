@@ -20,6 +20,24 @@
 
 void fftCall(UIData * uiData)
 {
+
+
+    int* res = fft(uiData->soundData->data,
+                   uiData->soundData->addInfo->num_of_sample,
+                   uiData->soundData->header->sample_rate,
+                   uiData->equalizerValue,
+                   uiData->fft_active,
+                   uiData->equalizerMode);
+    // ->fft_active : 0=No   1 = yes with plots   2 = yes without plot
+    // ->equalizerMode : 0=No   1 = yes threshold hard     2 = yes treshold soft
+
+    free(uiData->soundData->data);
+    uiData->soundData->data = res;
+
+
+
+    // Short time FFT
+
     if (uiData->fft_active)
     {
         long num_of_sample = uiData->soundData->addInfo->num_of_sample;
@@ -37,7 +55,7 @@ void fftCall(UIData * uiData)
             if (i == div - 1)
                 len = num_of_sample - i * partLen;
 
-            printf("decompose fft nb %l\n", i);
+            printf("decompose fft nb %li\n", i);
 
             int * data = &uiData->soundData->data[i * partLen];
             int* res = fft(data,
@@ -57,21 +75,8 @@ void fftCall(UIData * uiData)
 
 
 
-        uiData->fft_active = 0;
+        uiData->fft_active = 1;
     }
-
-
-    int* res = fft(uiData->soundData->data,
-                   uiData->soundData->addInfo->num_of_sample,
-                   uiData->soundData->header->sample_rate,
-                   uiData->equalizerValue,
-                   uiData->fft_active,
-                   uiData->equalizerMode);
-    // ->fft_active : 0=No   1 = yes with plots   2 = yes without plot
-    // ->equalizerMode : 0=No   1 = yes threshold hard     2 = yes treshold soft
-
-    free(uiData->soundData->data);
-    uiData->soundData->data = res;
 }
 
 
