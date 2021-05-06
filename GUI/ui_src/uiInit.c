@@ -17,7 +17,8 @@ UIData* init_data(GtkBuilder* builder)
     data->fileChooserBtn = GTK_FILE_CHOOSER_BUTTON(gtk_builder_get_object(builder, "filechooser"));
     data->fourrier_check = GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "check_fft"));
     data->wavlet_check = GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "check_wavelet"));
-    data->equalizerBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_equalizer"));
+    data->equalizer_check = GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "check_equalizer"));
+    data->playButton = GTK_BUTTON(gtk_builder_get_object(builder, "btn_play"));
     data->applyBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_apply"));
     data->saveBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_save"));
     data->soundViewer = GTK_IMAGE(gtk_builder_get_object(builder, "sound_viewer"));
@@ -56,6 +57,7 @@ UIData* init_data(GtkBuilder* builder)
     gtk_file_filter_add_pattern(data->file_filter, "*.wav");
 
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(data->fileChooserBtn), data->file_filter);
+    data->soundPath = NULL;
 
     return data;
 }
@@ -65,11 +67,12 @@ void setSignal(UIData* data)
     g_signal_connect(data->windowMain, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(data->windowProgressBar, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(data->fileChooserBtn, "file-set", G_CALLBACK(on_file_set), data);
-    g_signal_connect(data->equalizerBtn, "pressed", G_CALLBACK(onLaunchEqualizer), data);
+    g_signal_connect(data->playButton, "pressed", G_CALLBACK(onPlay), data);
     g_signal_connect(data->applyBtn, "pressed", G_CALLBACK(on_go_pressed), data);
     g_signal_connect(data->saveBtn, "pressed", G_CALLBACK(on_save), data);
     g_signal_connect(data->fourrier_check, "toggled", G_CALLBACK(on_check1), data);
     g_signal_connect(data->wavlet_check, "toggled", G_CALLBACK(on_check2), data);
+    g_signal_connect(data->equalizer_check, "toggled", G_CALLBACK(on_check3), data);
 
     g_signal_connect(data->adjustment1, "value-changed", G_CALLBACK(onAdjMoved1), data);
     g_signal_connect(data->adjustment2, "value-changed", G_CALLBACK(onAdjMoved2), data);

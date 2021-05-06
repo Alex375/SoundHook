@@ -23,14 +23,14 @@ void wavelet_target(WavData* data);
 void on_file_set(GtkFileChooserButton *widget, gpointer data)
 {
     UIData* uiData = (UIData*)data;
-    //TODO : Free old file path
 
-    char* soundPath = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
-    uiData->soundData = decodeWave(soundPath);
-    g_free(soundPath);
-    printWavHeader(uiData->soundData->header);
-    //if (uiData->soundData != NULL)
-      //  freeWavData(uiData->soundData);
+    if (uiData->soundPath != NULL)
+        free(uiData->soundPath);
+    uiData->soundPath = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
+    if (uiData->soundData != NULL)
+        freeWavData(uiData->soundData);
+    uiData->soundData = decodeWave(uiData->soundPath);
+
     long dataSize = uiData->soundData->addInfo->num_of_sample;
     double * xIn = malloc(sizeof (double) * dataSize);
     for (size_t i = 0; i < dataSize; i++)
@@ -117,6 +117,20 @@ void on_check2(GtkToggleButton *togglebutton, gpointer user_data)
     }
 }
 
+void on_check3(GtkToggleButton *togglebutton, gpointer user_data)
+{
+    UIData* data = (UIData*)user_data;
+    gtk_widget_show(GTK_WIDGET(data->windowEqualizer));
+    if (gtk_toggle_button_get_active(togglebutton)) {
+        gtk_widget_set_visible(GTK_WIDGET(data->windowEqualizer), gtk_true());
+        data->equalizerMode = 1;
+    }
+    else {
+        gtk_widget_set_visible(GTK_WIDGET(data->windowEqualizer), gtk_false());
+        data->equalizerMode = 0;
+    }
+}
+
 
 void wavelet_target(WavData* data)
 {
@@ -147,15 +161,17 @@ void on_save(GtkFileChooserButton *widget, gpointer user_data)
     gtk_widget_destroy (save_file_dialog);
 }
 
-void onLaunchEqualizer(GtkFileChooserButton *widget, gpointer user_data)
-{
-    UIData* data = (UIData*)user_data;
-    gtk_widget_show(GTK_WIDGET(data->windowEqualizer));
-}
-
 
 void onEqualizerModeChanged(GtkComboBox *widget, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
     data->equalizerMode = gtk_combo_box_get_active(widget) + 1;
+}
+
+void onPlay(GtkButton* button, gpointer user_data)
+{
+    UIData* data = (UIData*)user_data;
+    char* command;
+    asprintf(&command, "afplay %s", data->soundPath);
+    system(command);
 }

@@ -10,12 +10,14 @@
 
 typedef struct UIData UIData;
 struct UIData {
+    char* soundPath;
     GtkWindow *windowMain;
     GtkWindow *windowProgressBar;
     GtkWindow *windowEqualizer;
     GtkFileChooserButton *fileChooserBtn;
     GtkCheckButton* fourrier_check;
     GtkCheckButton* wavlet_check;
+    GtkCheckButton* equalizer_check;
     GtkButton* equalizerBtn;
     GtkButton* applyBtn;
     GtkButton* saveBtn;
@@ -40,6 +42,8 @@ struct UIData {
     GtkAdjustment* adjustment5;
     GtkComboBox* comboEqualizerMode;
     int equalizerMode;
+
+    GtkButton* playButton;
 
     double* equalizerValue;
 
