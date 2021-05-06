@@ -22,14 +22,15 @@ void wavelet_target(WavData* data);
 
 void on_file_set(GtkFileChooserButton *widget, gpointer data)
 {
-    UIData* uiData = (UIData*)data;
 
+    UIData* uiData = (UIData*)data;
     if (uiData->soundPath != NULL)
         free(uiData->soundPath);
     uiData->soundPath = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
     if (uiData->soundData != NULL)
         freeWavData(uiData->soundData);
     uiData->soundData = decodeWave(uiData->soundPath);
+    printWavHeader(uiData->soundData->header);
 
     long dataSize = uiData->soundData->addInfo->num_of_sample;
     double * xIn = malloc(sizeof (double) * dataSize);
@@ -57,7 +58,7 @@ void on_go_pressed(GtkButton* widget, gpointer data)
     UIData* uiData = (UIData*)data;
     //TODO : Fork to procedures
 
-    gtk_widget_show(GTK_WIDGET(uiData->windowProgressBar));
+    //gtk_widget_show(GTK_WIDGET(uiData->windowProgressBar));
 
     short eqactive = 0;
     for (size_t i = 0; i < 5; i++)
@@ -68,6 +69,7 @@ void on_go_pressed(GtkButton* widget, gpointer data)
     if (!eqactive)
         uiData->equalizerMode = 0;
 
+    if(uiData->fft_active || uiData->equalizerMode)
     fftCall(uiData);
 
 
@@ -93,6 +95,11 @@ void on_go_pressed(GtkButton* widget, gpointer data)
     free(xIn);
     free(in);
     gtk_image_set_from_file(GTK_IMAGE(uiData->soundViewer), ".res.png");
+    wavRecoder(uiData->soundData, "res.wav");
+    char* temp = "res.wav";
+    char* newpath = malloc(sizeof (char) * 8);
+    memcpy(newpath, temp, sizeof (char) * 8);
+    uiData->soundPath = newpath;
 }
 
 void on_check1(GtkToggleButton *togglebutton, gpointer user_data)
@@ -154,6 +161,7 @@ void on_save(GtkFileChooserButton *widget, gpointer user_data)
     if (res == GTK_RESPONSE_ACCEPT)
     {
         char *path;
+        printWavHeader(data->soundData->header);
         path = gtk_file_chooser_get_filename(save_file_choose);
         wavRecoder(data->soundData, path);
         g_free(path);
@@ -169,10 +177,48 @@ void onEqualizerModeChanged(GtkComboBox *widget, gpointer user_data)
     data->equalizerMode = gtk_combo_box_get_active(widget) + 1;
 }
 
+void playSound(UIData* data)
+{
+    char* command = "afplay";
+    char* argv[3];
+    argv[0] = command;
+    argv[1] = data->soundPath;
+    argv[2] = NULL;
+    pid_t pid = fork();
+    if (pid < 0)
+    {
+        g_print("Error forking for play");
+        return;
+    }
+    if (pid == 0)
+    {
+        execvp(command, argv);
+        exit(0);
+    }
+
+    data->playPid = malloc(sizeof (pid_t));
+    memcpy(data->playPid, &pid, sizeof (pid_t));
+
+}
+
 void onPlay(GtkButton* button, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
-    char* command;
-    asprintf(&command, "afplay %s", data->soundPath);
-    system(command);
+    g_print("path -> %s\n", data->soundPath);
+    if (data->playPid != NULL)
+        onStop(NULL, user_data);
+    playSound(data);
 }
+
+void onStop(GtkButton* button, gpointer user_data)
+{
+    UIData* data = (UIData*)user_data;
+
+    if (data->playPid != NULL)
+    {
+        kill(*(data->playPid), SIGTERM);
+    }
+    free(data->playPid);
+    data->playPid = NULL;
+}
+

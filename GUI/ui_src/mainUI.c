@@ -26,6 +26,7 @@ int main(int argc, char** argv)
 
     setSignal(uiData);
 
+    uiData->arg1 = argv[0];
     gtk_builder_connect_signals(builder, NULL);
     g_object_unref(builder);
 

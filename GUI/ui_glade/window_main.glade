@@ -201,7 +201,7 @@
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Equalizer mode :     </property>
+            <property name="label" translatable="yes">Thresholding mode :     </property>
           </object>
           <packing>
             <property name="left-attach">1</property>
@@ -365,24 +365,6 @@
                 <property name="row-homogeneous">True</property>
                 <property name="column-homogeneous">True</property>
                 <child>
-                  <object class="GtkButton" id="btn_play">
-                    <property name="label" translatable="yes">Play</property>
-                    <property name="width-request">80</property>
-                    <property name="height-request">30</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="margin-start">5</property>
-                    <property name="margin-end">5</property>
-                    <property name="margin-top">7</property>
-                    <property name="margin-bottom">3</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkButton" id="btn_apply">
                     <property name="label" translatable="yes">Apply</property>
                     <property name="width-request">80</property>
@@ -416,6 +398,53 @@
                   <packing>
                     <property name="left-attach">0</property>
                     <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <!-- n-columns=2 n-rows=1 -->
+                  <object class="GtkGrid">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="row-homogeneous">True</property>
+                    <property name="column-homogeneous">True</property>
+                    <child>
+                      <object class="GtkButton" id="btn_play">
+                        <property name="label" translatable="yes">Play</property>
+                        <property name="width-request">30</property>
+                        <property name="height-request">30</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="margin-end">2</property>
+                        <property name="margin-top">3</property>
+                        <property name="margin-bottom">3</property>
+                      </object>
+                      <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="btn_stop">
+                        <property name="label" translatable="yes">Stop</property>
+                        <property name="width-request">30</property>
+                        <property name="height-request">30</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="margin-end">2</property>
+                        <property name="margin-top">3</property>
+                        <property name="margin-bottom">3</property>
+                      </object>
+                      <packing>
+                        <property name="left-attach">1</property>
+                        <property name="top-attach">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
               </object>

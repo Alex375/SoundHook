@@ -10,6 +10,8 @@
 
 typedef struct UIData UIData;
 struct UIData {
+    char* arg1;
+    pid_t* playPid;
     char* soundPath;
     GtkWindow *windowMain;
     GtkWindow *windowProgressBar;
@@ -44,6 +46,7 @@ struct UIData {
     int equalizerMode;
 
     GtkButton* playButton;
+    GtkButton* stopButton;
 
     double* equalizerValue;
 
