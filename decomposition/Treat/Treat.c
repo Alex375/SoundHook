@@ -48,7 +48,7 @@ void treatOut(double* outMagn, int n_out, double time, int* iSpikes)
 
 
         int f = floor(maxI / time + 0.5);
-        if(f < 1000 || outMagn[maxI] * RATIO_DETECT_SPIKE < fullMax)
+        if(f < MIN_F || outMagn[maxI] * RATIO_DETECT_SPIKE < fullMax)
         {
             iSpikes[i] = -1;
             break;

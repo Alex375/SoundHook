@@ -243,7 +243,7 @@
                 <property name="height-request">350</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="stock">gtk-zoom-fit</property>
+                <property name="pixbuf">../Sound_Hook.jpeg</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
