@@ -282,7 +282,7 @@
             <property name="row-homogeneous">True</property>
             <property name="column-homogeneous">True</property>
             <child>
-              <!-- n-columns=1 n-rows=3 -->
+              <!-- n-columns=1 n-rows=4 -->
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -334,6 +334,22 @@
                     <property name="top-attach">2</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkCheckButton" id="check_equalizer">
+                    <property name="label" translatable="yes">Equalizer</property>
+                    <property name="width-request">125</property>
+                    <property name="height-request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="margin-end">5</property>
+                    <property name="draw-indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">3</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="left-attach">0</property>
@@ -349,8 +365,8 @@
                 <property name="row-homogeneous">True</property>
                 <property name="column-homogeneous">True</property>
                 <child>
-                  <object class="GtkButton" id="btn_equalizer">
-                    <property name="label" translatable="yes">Equalizer</property>
+                  <object class="GtkButton" id="btn_play">
+                    <property name="label" translatable="yes">Play</property>
                     <property name="width-request">80</property>
                     <property name="height-request">30</property>
                     <property name="visible">True</property>
