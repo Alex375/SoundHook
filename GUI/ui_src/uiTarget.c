@@ -134,7 +134,8 @@ void on_check3(GtkToggleButton *togglebutton, gpointer user_data)
 
 void wavelet_target(WavData* data)
 {
-    wavelet(data);
+    //wavelet(data);
+    g_print("Wavelet\n");
 }
 
 void on_save(GtkFileChooserButton *widget, gpointer user_data)
