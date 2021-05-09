@@ -5,10 +5,11 @@
 #ifndef SOUNDHOOK_FFT_H
 #define SOUNDHOOK_FFT_H
 
-
+#define STFFTDuration 1
 //void fft(double *reel, double *imag, int log2n, int sign);
+#include "../GUI/type/types.h"
 
-
-int fft(int const* decoded, int sizeIn, double time, const char* opener);
+void fftCall(UIData * uiData);
+int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat, int equa);
 
 #endif //SOUNDHOOK_FFT_H

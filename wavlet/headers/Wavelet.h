@@ -5,6 +5,6 @@
 #ifndef SOUNDHOOK_WAVELET_H
 #define SOUNDHOOK_WAVELET_H
 #include "../../file_decoder/wav/types/wav.h"
-void wavelet(WavData* wavData);
+int wavelet(WavData* wavData);
 
 #endif //SOUNDHOOK_WAVELET_H

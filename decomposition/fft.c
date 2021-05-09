@@ -8,25 +8,86 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
+#include "fft.h"
 #include "Treat/Treat.h"
+#include "Treat/equalizer.h"
 #include </usr/local/include/fftw3.h>
 #include "../GraphTools/Graph.h"
 #include "../file_decoder/wav/Recoder/headers/WavRecoder.h"
+#include "../GUI/type/types.h"
 
 
-
-
-
-
-
-// fft init
-// real numbers in
-int fft(int const* decoded, int sizeIn, double time, const char* opener)
+void fftCall(UIData * uiData)
 {
+
+
+    int* res = fft(uiData->soundData->data,
+                   uiData->soundData->addInfo->num_of_sample,
+                   uiData->soundData->header->sample_rate,
+                   uiData->equalizerValue,
+                   uiData->fft_active,
+                   uiData->equalizerMode);
+    // ->fft_active : 0=No   1 = yes with plots   2 = yes without plot
+    // ->equalizerMode : 0=No   1 = yes threshold hard     2 = yes treshold soft
+
+    free(uiData->soundData->data);
+    uiData->soundData->data = res;
+
+
+
+    // Short time FFT
+
+    if (uiData->fft_active)
+    {
+        long num_of_sample = uiData->soundData->addInfo->num_of_sample;
+        long sample_rate = uiData->soundData->header->sample_rate;
+
+        int div = fabs((double)num_of_sample / (double)(sample_rate * STFFTDuration) + 0.4);
+        if (div < 1)
+            div = 1;
+        long partLen = num_of_sample / div;
+
+        long i = 0;
+        while (i < div)
+        {
+            int len = partLen;
+            if (i == div - 1)
+                len = num_of_sample - i * partLen;
+
+            printf("decompose fft nb %li\n", i);
+
+            int * data = &uiData->soundData->data[i * partLen];
+            int* res = fft(data,
+                           len,
+                           uiData->soundData->header->sample_rate,
+                           uiData->equalizerValue,
+                           2,
+                           0);
+
+            for (int j = 0; j < len; ++j)
+            {
+                data[j] = res[j];
+            }
+
+            i++;
+        }
+
+
+
+        uiData->fft_active = 1;
+    }
+}
+
+
+int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat, int equa)
+{
+    double time = (double)sizeIn / (double)sample_rate;
+
     double * in  = (double*)fftw_malloc(sizeof(double) * sizeIn);
     for (int i = 0; i < sizeIn; ++i)
     {
-        in[i] = ((double)decoded[i]) ;
+        in[i] = ((double)data[i]) ;
         //printf("%f\n", in[i]);
     }
 
@@ -35,8 +96,8 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener)
     {
         xIn[i] = (double)i;
     }
-
-    grapher(xIn, in, (size_t)sizeIn, (size_t)sizeIn, "1.original.png");
+    if (equa || treat < 2)
+        grapher(xIn, in, (size_t)sizeIn, (size_t)sizeIn, "1.original.png");
 
 
 
@@ -78,34 +139,59 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener)
 
     }
 
+
     double * xs = malloc(sizeof (double) * n_out);
     for (size_t i = 0; i < n_out; i++)
     {
         xs[i] = (double)i / time;
     }
 
-    grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "2.fourierGraph.png");
+    if (equa || treat < 2)
+        grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "2.fourierGraph.png");
 
 
 
     ///////////////////TREAT
 
-    int* iSpikes = malloc(sizeof(int) * NB_MAX);
-    treatOut(outMagn, n_out, time, iSpikes);
-
+    if (treat)
     {
-        int i = 0;
-        while (i < NB_MAX && iSpikes[i] != -1)
+        int* iSpikes = malloc(sizeof(int) * NB_MAX);
+        treatOut(outMagn, n_out, time, iSpikes);
+
         {
-            for (int j = iSpikes[i] - (RANGE_DESTROY * (int)time); j <= iSpikes[i] + (RANGE_DESTROY * (int)time); ++j)
+            int i = 0;
+            while (i < NB_MAX && iSpikes[i] != -1)
             {
-                out[j][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
-                out[j][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
+                for (int j = iSpikes[i] - (RANGE_DESTROY * (int)time); j <= iSpikes[i] + (RANGE_DESTROY * (int)time); ++j)
+                {
+                    out[j][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
+                    out[j][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
+                }
+                i++;
             }
-            i++;
         }
+
+        free(iSpikes);
     }
 
+    if (equa)
+    {
+        double * coefs = malloc(sizeof(double) * n_out);
+        int min = n_out;
+
+        equalizer(coefs, min, sliderValues, time, (double)sample_rate, equa);
+
+        //printf("\nCoefs are : \n");
+        //for (int i = 0; i < n_out / 100; ++i) {
+        //    printf("%f  %d\n", coefs[i * 100], i * 100 / (int)data->addInfo->time);
+        //}
+
+        for (int i = 0; i < n_out; ++i)
+        {
+            out[i][0] *= coefs[i] / 100;
+            out[i][1] *= coefs[i] / 100;
+        }
+    }
 
 
     ///////////////////// invert FFT
@@ -127,11 +213,10 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener)
     {
         recod[i] = (int)back[i];
     }
-    FILE* f = fopen(opener, "r");
-    recodeWav(recod, f, sizeIn);
 
 
-    grapher(xIn, back, (size_t)sizeIn, (size_t)sizeIn, "3.corrected.png");
+    if (equa || treat < 2)
+        grapher(xIn, back, (size_t)sizeIn, (size_t)sizeIn, "3.corrected.png");
 
 
     ////////////////VERIF FFT
@@ -158,7 +243,8 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener)
     {
         outMagn[i] = outMagn[i]/max*1000;
     }
-    grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "4.2nd_fourier_verif.png");
+    if (equa || treat < 2)
+        grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "4.2nd_fourier_verif.png");
 
 
 
@@ -170,6 +256,6 @@ int fft(int const* decoded, int sizeIn, double time, const char* opener)
     fftw_destroy_plan(plan_forward);
     fftw_free(in); fftw_free(out);
     free(outMagn);
-    free(iSpikes);
-    return 0;
+
+    return recod;
 }

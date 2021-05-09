@@ -17,6 +17,19 @@ void grapher(double* xs, double* ys, size_t xlen, size_t ylen, char* name)
     double *pngdata = ConvertToPNG(&length, canvasReference->image);
     WriteToFile(pngdata, length, name);
     DeleteImage(canvasReference->image);
+}
 
+
+void grapherSize(double* xs, double* ys, double width, double height, size_t xlen, size_t ylen, char* name)
+{
+
+
+    RGBABitmapImageReference *canvasReference = CreateRGBABitmapImageReference();
+    DrawScatterPlot(canvasReference, width, height, xs, xlen, ys, ylen);
+
+    size_t length;
+    double *pngdata = ConvertToPNG(&length, canvasReference->image);
+    WriteToFile(pngdata, length, name);
+    DeleteImage(canvasReference->image);
 
 }
