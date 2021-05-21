@@ -45,15 +45,18 @@ void treatOut(double* outMagn, int n_out, double time, int* iSpikes)
         }
         if (i == 0)
             fullMax = outMagn[maxI];
-        if(outMagn[maxI] * RATIO_DETECT_SPIKE < fullMax)
+
+
+        int f = floor(maxI / time + 0.5);
+        if(f < MIN_F || outMagn[maxI] * RATIO_DETECT_SPIKE < fullMax)
         {
             iSpikes[i] = -1;
             break;
         }
 
+
         iSpikes[i] = maxI;
 
-        int f = floor(maxI / time + 0.5);
 
         printf("The dominating frequence is : %i hertz (%i in tab) = %f", f, maxI, outMagn[maxI]);
 

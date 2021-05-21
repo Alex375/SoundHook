@@ -7,9 +7,9 @@
 
 #define RATIO_DETECT_SPIKE 2
 #define LEN_DETECT_SPIKE 30
-#define NB_MAX 3
-
-#define RANGE_DESTROY 15
+#define NB_MAX 2
+#define RANGE_DESTROY 30
+#define MIN_F 700
 
 void treatOut(double* outMagn, int n_out, double time, int* iSpikes);
 
