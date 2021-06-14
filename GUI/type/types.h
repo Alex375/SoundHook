@@ -6,13 +6,16 @@
 #define SOUNDHOOK_TYPES_H
 
 #include <gtk/gtk.h>
+#include <pthread.h>
 #include "../../file_decoder/wav/types/wav.h"
 
 typedef struct UIData UIData;
 struct UIData {
     char* arg1;
-    pid_t* playPid;
-    char* soundPath;
+    pid_t* playPidOld;
+    pid_t* playPidNew;
+    char* soundPathOld;
+    char* soundPathNew;
     GtkWindow *windowMain;
     GtkWindow *windowProgressBar;
     GtkWindow *windowEqualizer;
@@ -45,13 +48,15 @@ struct UIData {
     GtkComboBox* comboEqualizerMode;
     int equalizerMode;
 
-    GtkButton* playButton;
-    GtkButton* stopButton;
+    GtkButton* playButtonOld;
+    GtkButton* playButtonNew;
 
     double* equalizerValue;
 
 
 };
+
+void freeUiData(UIData* data);
 
 
 #endif //SOUNDHOOK_TYPES_H

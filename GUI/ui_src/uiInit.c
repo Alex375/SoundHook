@@ -18,8 +18,8 @@ UIData* init_data(GtkBuilder* builder)
     data->fourrier_check = GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "check_fft"));
     data->wavlet_check = GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "check_wavelet"));
     data->equalizer_check = GTK_CHECK_BUTTON(gtk_builder_get_object(builder, "check_equalizer"));
-    data->playButton = GTK_BUTTON(gtk_builder_get_object(builder, "btn_play"));
-    data->stopButton = GTK_BUTTON(gtk_builder_get_object(builder, "btn_stop"));
+    data->playButtonOld = GTK_BUTTON(gtk_builder_get_object(builder, "btn_play_old"));
+    data->playButtonNew = GTK_BUTTON(gtk_builder_get_object(builder, "btn_play_new"));
     data->applyBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_apply"));
     data->saveBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_save"));
     data->soundViewer = GTK_IMAGE(gtk_builder_get_object(builder, "sound_viewer"));
@@ -58,8 +58,10 @@ UIData* init_data(GtkBuilder* builder)
     gtk_file_filter_add_pattern(data->file_filter, "*.wav");
 
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(data->fileChooserBtn), data->file_filter);
-    data->soundPath = NULL;
-    data->playPid = 0;
+    data->soundPathOld = NULL;
+    data->soundPathNew = NULL;
+    data->playPidOld = NULL;
+    data->playPidNew = NULL;
 
     return data;
 }
@@ -69,8 +71,8 @@ void setSignal(UIData* data)
     g_signal_connect(data->windowMain, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(data->windowProgressBar, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(data->fileChooserBtn, "file-set", G_CALLBACK(on_file_set), data);
-    g_signal_connect(data->playButton, "pressed", G_CALLBACK(onPlay), data);
-    g_signal_connect(data->stopButton, "pressed", G_CALLBACK(onStop), data);
+    g_signal_connect(data->playButtonOld, "pressed", G_CALLBACK(onPlayOld), data);
+    g_signal_connect(data->playButtonNew, "pressed", G_CALLBACK(onPlayNew), data);
     g_signal_connect(data->applyBtn, "pressed", G_CALLBACK(on_go_pressed), data);
     g_signal_connect(data->saveBtn, "pressed", G_CALLBACK(on_save), data);
     g_signal_connect(data->fourrier_check, "toggled", G_CALLBACK(on_check1), data);

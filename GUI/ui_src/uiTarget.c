@@ -14,6 +14,8 @@
 #include "../ui_tools/headers/UITools.h"
 #include "../../wavlet/headers/Wavelet.h"
 #include "../../GraphTools/Graph.h"
+#include <pthread.h>
+#include "headers/SoundPlay.h"
 
 void wavelet_target(WavData* data);
 
@@ -24,12 +26,13 @@ void on_file_set(GtkFileChooserButton *widget, gpointer data)
 {
 
     UIData* uiData = (UIData*)data;
-    if (uiData->soundPath != NULL)
-        free(uiData->soundPath);
-    uiData->soundPath = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
+    uiData->soundPathNew = NULL;
+    if (uiData->soundPathOld != NULL)
+        free(uiData->soundPathOld);
+    uiData->soundPathOld = gtk_file_chooser_get_filename((GtkFileChooser *) widget);
     if (uiData->soundData != NULL)
         freeWavData(uiData->soundData);
-    uiData->soundData = decodeWave(uiData->soundPath);
+    uiData->soundData = decodeWave(uiData->soundPathOld);
     printWavHeader(uiData->soundData->header);
 
     long dataSize = uiData->soundData->addInfo->num_of_sample;
@@ -98,7 +101,7 @@ void on_go_pressed(GtkButton* widget, gpointer data)
     char* temp = "res.wav";
     char* newpath = malloc(sizeof (char) * 8);
     memcpy(newpath, temp, sizeof (char) * 8);
-    uiData->soundPath = newpath;
+    uiData->soundPathNew = newpath;
 }
 
 void on_check1(GtkToggleButton *togglebutton, gpointer user_data)
@@ -176,48 +179,40 @@ void onEqualizerModeChanged(GtkComboBox *widget, gpointer user_data)
     data->equalizerMode = gtk_combo_box_get_active(widget) + 1;
 }
 
-void playSound(UIData* data)
+
+void onPlayOld(GtkButton* button, gpointer user_data)
 {
-    char* command = "afplay";
-    char* argv[3];
-    argv[0] = command;
-    argv[1] = data->soundPath;
-    argv[2] = NULL;
-    pid_t pid = fork();
-    if (pid < 0)
+    UIData* data = (UIData*)user_data;
+    if (data->playPidOld != NULL)
     {
-        g_print("Error forking for play");
+        stopSoundOld(data);
         return;
     }
-    if (pid == 0)
+    g_print("path -> %s\n", data->soundPathOld);
+    stopSoundOld(data);
+    stopSoundNew(data);
+    if (data->soundPathOld != NULL)
     {
-        execvp(command, argv);
-        exit(0);
+        pthread_t thr;
+        pthread_create(&thr, NULL, playSoundOld, user_data);
     }
-
-    data->playPid = malloc(sizeof (pid_t));
-    memcpy(data->playPid, &pid, sizeof (pid_t));
-
 }
 
-void onPlay(GtkButton* button, gpointer user_data)
+void onPlayNew(GtkButton* button, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
-    g_print("path -> %s\n", data->soundPath);
-    if (data->playPid != NULL)
-        onStop(NULL, user_data);
-    playSound(data);
-}
-
-void onStop(GtkButton* button, gpointer user_data)
-{
-    UIData* data = (UIData*)user_data;
-
-    if (data->playPid != NULL)
+    if (data->playPidNew != NULL)
     {
-        kill(*(data->playPid), SIGTERM);
+        stopSoundNew(data);
+        return;
     }
-    free(data->playPid);
-    data->playPid = NULL;
-}
+    g_print("path -> %s\n", data->soundPathNew);
+    stopSoundOld(data);
+    stopSoundNew(data);
 
+    if (data->soundPathNew != NULL)
+    {
+        pthread_t thr;
+        pthread_create(&thr, NULL, playSoundNew, user_data);
+    }
+}

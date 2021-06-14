@@ -8,6 +8,8 @@
 #include "../type/types.h"
 #include <err.h>
 #include "headers/uiInit.h"
+#include "headers/uiTarget.h"
+#include "headers/SoundPlay.h"
 
 
 int main(int argc, char** argv)
@@ -35,7 +37,11 @@ int main(int argc, char** argv)
 
 
     /////////FREE
-    free(uiData);
+
+    stopSoundOld(uiData);
+    stopSoundNew(uiData);
+    freeUiData(uiData);
+
 
     return 0;
 }
