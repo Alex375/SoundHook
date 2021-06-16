@@ -9,7 +9,7 @@ typedef struct WavHeader WavHeader;
 struct WavHeader
 {
     unsigned char riff[4];                      // RIFF string
-    unsigned int overall_size   ;               // overall size of file in bytes
+    unsigned int overall_size;                  // overall size of file in bytes
     unsigned char wave[4];                      // WAVE string
     unsigned char fmt_chunk_marker[4];          // fmt string with trailing null char
     unsigned int length_of_fmt;                 // length of the format data
