@@ -38,13 +38,10 @@ int main(int argc, char** argv)
 
     /////////FREE
 
-    stopSoundOld(uiData);
-    stopSoundNew(uiData);
+    playerCheck(uiData);
     freeUiData(uiData);
 
 
     return 0;
 }
-
-
 

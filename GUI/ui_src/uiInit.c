@@ -62,6 +62,8 @@ UIData* init_data(GtkBuilder* builder)
     data->soundPathNew = NULL;
     data->playPidOld = NULL;
     data->playPidNew = NULL;
+    data->playThreadOld = NULL;
+    data->playThreadNew = NULL;
 
     return data;
 }

@@ -14,6 +14,8 @@ struct UIData {
     char* arg1;
     pid_t* playPidOld;
     pid_t* playPidNew;
+    pthread_t* playThreadOld;
+    pthread_t* playThreadNew;
     char* soundPathOld;
     char* soundPathNew;
     GtkWindow *windowMain;

@@ -185,34 +185,31 @@ void onPlayOld(GtkButton* button, gpointer user_data)
     UIData* data = (UIData*)user_data;
     if (data->playPidOld != NULL)
     {
-        stopSoundOld(data);
+        playerCheck(data);
         return;
     }
-    g_print("path -> %s\n", data->soundPathOld);
-    stopSoundOld(data);
-    stopSoundNew(data);
+    playerCheck(data);
     if (data->soundPathOld != NULL)
     {
-        pthread_t thr;
-        pthread_create(&thr, NULL, playSoundOld, user_data);
+        data->playThreadOld = malloc(sizeof (pthread_t));
+        pthread_create(data->playThreadOld, NULL, playSoundOld, user_data);
     }
 }
 
 void onPlayNew(GtkButton* button, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
+
+
     if (data->playPidNew != NULL)
     {
-        stopSoundNew(data);
+        playerCheck(data);
         return;
     }
-    g_print("path -> %s\n", data->soundPathNew);
-    stopSoundOld(data);
-    stopSoundNew(data);
-
+    playerCheck(data);
     if (data->soundPathNew != NULL)
     {
-        pthread_t thr;
-        pthread_create(&thr, NULL, playSoundNew, user_data);
+        data->playThreadNew = malloc(sizeof (pthread_t));
+        pthread_create(data->playThreadNew, NULL, playSoundNew, user_data);
     }
 }
