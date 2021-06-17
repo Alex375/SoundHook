@@ -8,6 +8,6 @@
 #define SVlen 5
 
 
-int equalizer(double* coefs, int n_out, double* sliderValues, double time, double sampleRate, int mode);
+int equalizer(double* coefs, double* coefsPrint, int n_out, double* sliderValues, double time, double sampleRate, float QVal, int mode);
 
 #endif //SOUNDHOOK_EQUALIZER_H

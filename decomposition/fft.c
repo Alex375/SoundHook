@@ -27,7 +27,8 @@ void fftCall(UIData * uiData)
                    uiData->soundData->header->sample_rate,
                    uiData->equalizerValue,
                    uiData->fft_active,
-                   uiData->equalizerMode);
+                   uiData->equalizerMode,
+                   uiData->QVal);
     // ->fft_active : 0=No   1 = yes with plots   2 = yes without plot
     // ->equalizerMode : 0=No   1 = yes threshold hard     2 = yes treshold soft
 
@@ -63,7 +64,8 @@ void fftCall(UIData * uiData)
                            uiData->soundData->header->sample_rate,
                            uiData->equalizerValue,
                            2,
-                           0);
+                           0,
+                           1);
 
             for (int j = 0; j < len; ++j)
             {
@@ -80,7 +82,7 @@ void fftCall(UIData * uiData)
 }
 
 
-int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat, int equa)
+int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat, int equa, double QVal)
 {
     double time = (double)sizeIn / (double)sample_rate;
 
@@ -177,9 +179,14 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
     if (equa)
     {
         double * coefs = malloc(sizeof(double) * n_out);
-        int min = n_out;
+        double * coefsPrint = malloc(sizeof(double) * 500 * (SVlen - 1));
 
-        equalizer(coefs, min, sliderValues, time, (double)sample_rate, equa);
+
+        ///////////// temp ////////
+        double QVal = 2;
+
+
+        equalizer(coefs, coefsPrint, (int)n_out, sliderValues, time, (double)sample_rate, QVal, equa);
 
         //printf("\nCoefs are : \n");
         //for (int i = 0; i < n_out / 100; ++i) {
@@ -191,6 +198,19 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
             out[i][0] *= coefs[i] / 100;
             out[i][1] *= coefs[i] / 100;
         }
+
+
+        coefs[0] = 0;
+        coefs[n_out - 1] = 200.01;
+        coefsPrint[0] = 0;
+        coefsPrint[500 * (SVlen - 1)] = 200.01;
+
+        grapher(xIn, coefsPrint, (size_t)(500 * (SVlen - 1)), (size_t)(500 * (SVlen - 1)), "coefs.png");
+        grapher(xIn, coefs, (size_t)n_out, (size_t)n_out, "coefsReal.png");
+
+        free(coefs);
+        free(coefsPrint);
+
     }
 
 
@@ -218,6 +238,7 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
     if (equa || treat < 2)
         grapher(xIn, back, (size_t)sizeIn, (size_t)sizeIn, "3.corrected.png");
 
+    free(xIn);
 
     ////////////////VERIF FFT
 
@@ -247,7 +268,7 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
         grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "4.2nd_fourier_verif.png");
 
 
-
+    free(xs);
 
 
 

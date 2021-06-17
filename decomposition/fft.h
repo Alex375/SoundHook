@@ -10,6 +10,6 @@
 #include "../GUI/type/types.h"
 
 void fftCall(UIData * uiData);
-int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat, int equa);
+int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat, int equa, double QVal);
 
 #endif //SOUNDHOOK_FFT_H
