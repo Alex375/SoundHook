@@ -42,11 +42,16 @@ struct UIData {
     GtkScale* scale3;
     GtkScale* scale4;
     GtkScale* scale5;
+    GtkScale* scale6;
     GtkAdjustment* adjustment1;
     GtkAdjustment* adjustment2;
     GtkAdjustment* adjustment3;
     GtkAdjustment* adjustment4;
     GtkAdjustment* adjustment5;
+    GtkAdjustment* adjustment6;
+
+    GtkLabel* qFactLbl;
+
     GtkComboBox* comboEqualizerMode;
     int equalizerMode;
 
@@ -54,6 +59,7 @@ struct UIData {
     GtkButton* playButtonNew;
 
     double* equalizerValue;
+    double qFactor;
 
 
 };

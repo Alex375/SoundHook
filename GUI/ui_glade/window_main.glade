@@ -32,11 +32,18 @@
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="adjustment6">
+    <property name="lower">1</property>
+    <property name="upper">10</property>
+    <property name="value">1</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkWindow" id="window_equalizer">
     <property name="can-focus">False</property>
     <property name="title" translatable="yes">Equalizer</property>
     <child>
-      <!-- n-columns=5 n-rows=3 -->
+      <!-- n-columns=6 n-rows=3 -->
       <object class="GtkGrid">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
@@ -113,7 +120,7 @@
           <object class="GtkScale" id="scale5">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
-            <property name="margin-end">7</property>
+            <property name="margin-end">5</property>
             <property name="margin-top">5</property>
             <property name="orientation">vertical</property>
             <property name="adjustment">adjustment5</property>
@@ -207,6 +214,34 @@
             <property name="left-attach">1</property>
             <property name="top-attach">2</property>
           </packing>
+        </child>
+        <child>
+          <object class="GtkScale" id="scale6">
+            <property name="can-focus">True</property>
+            <property name="margin-end">7</property>
+            <property name="margin-top">5</property>
+            <property name="orientation">vertical</property>
+            <property name="adjustment">adjustment6</property>
+            <property name="inverted">True</property>
+            <property name="round-digits">1</property>
+          </object>
+          <packing>
+            <property name="left-attach">5</property>
+            <property name="top-attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lbl_qfact">
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Q factor</property>
+          </object>
+          <packing>
+            <property name="left-attach">5</property>
+            <property name="top-attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
         <child>
           <placeholder/>

@@ -177,6 +177,16 @@ void onEqualizerModeChanged(GtkComboBox *widget, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
     data->equalizerMode = gtk_combo_box_get_active(widget) + 1;
+    if (data->equalizerMode == 1)
+    {
+        gtk_widget_set_visible(GTK_WIDGET(data->qFactLbl), gtk_false());
+        gtk_widget_set_visible(GTK_WIDGET(data->scale6), gtk_false());
+    }
+    else
+    {
+        gtk_widget_set_visible(GTK_WIDGET(data->qFactLbl), gtk_true());
+        gtk_widget_set_visible(GTK_WIDGET(data->scale6), gtk_true());
+    }
 }
 
 

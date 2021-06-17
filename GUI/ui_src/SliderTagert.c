@@ -37,3 +37,10 @@ void onAdjMoved5(GtkAdjustment* adjustment, gpointer user_data)
     UIData * data = (UIData*)user_data;
     data->equalizerValue[4] = gtk_adjustment_get_value(adjustment);
 }
+
+
+void onAdjMoved6(GtkAdjustment* adjustment, gpointer user_data)
+{
+    UIData * data = (UIData*)user_data;
+    data->qFactor = gtk_adjustment_get_value(adjustment);
+}
