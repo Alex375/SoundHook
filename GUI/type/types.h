@@ -34,6 +34,7 @@ struct UIData {
     int wavlet_active;
     WavData * soundData;
     GtkImage * soundViewer;
+    GtkImage * equalizerViewer;
 
     GtkScale* scale1;
     GtkScale* scale2;

@@ -16,6 +16,7 @@
 #include "../../GraphTools/Graph.h"
 #include <pthread.h>
 #include "headers/SoundPlay.h"
+#include "headers/EqualizerViewer.h"
 
 void wavelet_target(WavData* data);
 
@@ -131,8 +132,10 @@ void on_check3(GtkToggleButton *togglebutton, gpointer user_data)
     UIData* data = (UIData*)user_data;
     gtk_widget_show(GTK_WIDGET(data->windowEqualizer));
     if (gtk_toggle_button_get_active(togglebutton)) {
+
         gtk_widget_set_visible(GTK_WIDGET(data->windowEqualizer), gtk_true());
         data->equalizerMode = 1;
+        applyEquaPreview(data);
     }
     else {
         gtk_widget_set_visible(GTK_WIDGET(data->windowEqualizer), gtk_false());
@@ -177,6 +180,7 @@ void onEqualizerModeChanged(GtkComboBox *widget, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
     data->equalizerMode = gtk_combo_box_get_active(widget) + 1;
+    applyEquaPreview(data);
     if (data->equalizerMode == 1)
     {
         gtk_widget_set_visible(GTK_WIDGET(data->qFactLbl), gtk_false());

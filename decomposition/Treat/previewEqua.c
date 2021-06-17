@@ -44,7 +44,7 @@ int previewEqua(double* sliderValues, float QVal, int mode)
     coefsPrint[0] = 0;
     coefsPrint[1] = 200.01;
 
-    grapher(xIn, coefsPrint, sizeIn, sizeIn, "coefs.png");
+    grapherSize(xIn, coefsPrint, 600, 200, sizeIn, sizeIn, "coefs.png");
 
     free(coefsPrint);
     free(xIn);

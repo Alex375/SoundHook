@@ -23,11 +23,12 @@ UIData* init_data(GtkBuilder* builder)
     data->applyBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_apply"));
     data->saveBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_save"));
     data->soundViewer = GTK_IMAGE(gtk_builder_get_object(builder, "sound_viewer"));
+    data->equalizerViewer = GTK_IMAGE(gtk_builder_get_object(builder, "equalizer_preview"));
     data->fft_active = 0;
     data->wavlet_active = 0;
     data->soundData = NULL;
 
-    data->windowEqualizer = GTK_WINDOW(gtk_builder_get_object(builder, "window_equalizer"));
+    data->windowEqualizer = GTK_WINDOW(gtk_builder_get_object(builder, "window_equalizer_pre"));
     data->scale1 = GTK_SCALE(gtk_builder_get_object(builder, "scale1"));
     data->scale2 = GTK_SCALE(gtk_builder_get_object(builder, "scale2"));
     data->scale3 = GTK_SCALE(gtk_builder_get_object(builder, "scale3"));
@@ -45,6 +46,7 @@ UIData* init_data(GtkBuilder* builder)
         err(EXIT_FAILURE, "Memory allocation failed");
     for (size_t i = 0; i < 5; i++)
         data->equalizerValue[i] = 100;
+    data->qFactor = 1;
     data->equalizerMode = 1;
     data->comboEqualizerMode = GTK_COMBO_BOX(gtk_builder_get_object(builder, "equlizermode"));
 
