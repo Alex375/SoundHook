@@ -54,6 +54,7 @@ UIData* init_data(GtkBuilder* builder)
     data->progress_stop_btn = GTK_BUTTON(gtk_builder_get_object(builder, "stop_btn"));
     data->progress_bar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "progress_bar"));
     data->progress_lbl = GTK_LABEL(gtk_builder_get_object(builder, "state_label"));
+    data->btnStop = GTK_BUTTON(gtk_builder_get_object(builder, "btn_stop"));
 
 
     data->file_filter = gtk_file_filter_new();
@@ -65,8 +66,7 @@ UIData* init_data(GtkBuilder* builder)
     data->soundPathNew = NULL;
     data->playPidOld = NULL;
     data->playPidNew = NULL;
-    data->playThreadOld = NULL;
-    data->playThreadNew = NULL;
+
 
     return data;
 }
@@ -78,6 +78,7 @@ void setSignal(UIData* data)
     g_signal_connect(data->fileChooserBtn, "file-set", G_CALLBACK(on_file_set), data);
     g_signal_connect(data->playButtonOld, "pressed", G_CALLBACK(onPlayOld), data);
     g_signal_connect(data->playButtonNew, "pressed", G_CALLBACK(onPlayNew), data);
+    g_signal_connect(data->btnStop, "pressed", G_CALLBACK(onStop), data);
     g_signal_connect(data->applyBtn, "pressed", G_CALLBACK(on_go_pressed), data);
     g_signal_connect(data->saveBtn, "pressed", G_CALLBACK(on_save), data);
     g_signal_connect(data->fourrier_check, "toggled", G_CALLBACK(on_check1), data);

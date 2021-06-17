@@ -6,10 +6,8 @@
 #define SOUNDHOOK_SOUNDPLAY_H
 #include "../../type/types.h"
 
-void playerCheck(UIData* data);
-void stopSoundOld(UIData* data);
-void stopSoundNew(UIData* data);
-void* playSoundOld(void* arg);
-void* playSoundNew(void* arg);
+void stopPlay(UIData* data);
+void playSoundOld(UIData* data);
+void playSoundNew(UIData* data);
 
 #endif //SOUNDHOOK_SOUNDPLAY_H

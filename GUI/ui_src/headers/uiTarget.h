@@ -16,6 +16,7 @@ void on_save(GtkFileChooserButton *widget, gpointer user_data);
 void onEqualizerModeChanged(GtkComboBox *widget, gpointer user_data);
 void onPlayOld(GtkButton* button, gpointer user_data);
 void onPlayNew(GtkButton* button, gpointer user_data);
+void onStop(GtkButton* button, gpointer user_data);
 
 
 #endif //SOUNDHOOK_UITARGET_H

@@ -193,33 +193,22 @@ void onEqualizerModeChanged(GtkComboBox *widget, gpointer user_data)
 void onPlayOld(GtkButton* button, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
-    if (data->playPidOld != NULL)
-    {
-        playerCheck(data);
-        return;
-    }
-    playerCheck(data);
-    if (data->soundPathOld != NULL)
-    {
-        data->playThreadOld = malloc(sizeof (pthread_t));
-        pthread_create(data->playThreadOld, NULL, playSoundOld, user_data);
-    }
+
+    stopPlay(data);
+    playSoundOld(data);
 }
 
 void onPlayNew(GtkButton* button, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
 
+    stopPlay(data);
+    playSoundNew(data);
+}
 
-    if (data->playPidNew != NULL)
-    {
-        playerCheck(data);
-        return;
-    }
-    playerCheck(data);
-    if (data->soundPathNew != NULL)
-    {
-        data->playThreadNew = malloc(sizeof (pthread_t));
-        pthread_create(data->playThreadNew, NULL, playSoundNew, user_data);
-    }
+
+void onStop(GtkButton* button, gpointer user_data)
+{
+    UIData* data = (UIData*)user_data;
+    stopPlay(data);
 }
