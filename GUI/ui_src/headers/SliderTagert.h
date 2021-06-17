@@ -12,5 +12,6 @@ void onAdjMoved2(GtkAdjustment* adjustment, gpointer user_data);
 void onAdjMoved3(GtkAdjustment* adjustment, gpointer user_data);
 void onAdjMoved4(GtkAdjustment* adjustment, gpointer user_data);
 void onAdjMoved5(GtkAdjustment* adjustment, gpointer user_data);
+void onAdjMoved6(GtkAdjustment* adjustment, gpointer user_data);
 
 #endif //SOUNDHOOK_SLIDERTAGERT_H

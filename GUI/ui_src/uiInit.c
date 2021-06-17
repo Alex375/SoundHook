@@ -33,11 +33,13 @@ UIData* init_data(GtkBuilder* builder)
     data->scale3 = GTK_SCALE(gtk_builder_get_object(builder, "scale3"));
     data->scale4 = GTK_SCALE(gtk_builder_get_object(builder, "scale4"));
     data->scale5 = GTK_SCALE(gtk_builder_get_object(builder, "scale5"));
+    data->scale6 = GTK_SCALE(gtk_builder_get_object(builder, "scale6"));
     data->adjustment1 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment1"));
     data->adjustment2 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment2"));
     data->adjustment3 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment3"));
     data->adjustment4 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment4"));
     data->adjustment5 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment5"));
+    data->adjustment6 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment6"));
     data->equalizerValue = malloc(sizeof (double) * 5);
     if (data->equalizerValue ==  NULL)
         err(EXIT_FAILURE, "Memory allocation failed");
@@ -46,6 +48,7 @@ UIData* init_data(GtkBuilder* builder)
     data->equalizerMode = 1;
     data->comboEqualizerMode = GTK_COMBO_BOX(gtk_builder_get_object(builder, "equlizermode"));
 
+    data->qFactLbl = GTK_LABEL(gtk_builder_get_object(builder, "lbl_qfact"));
 
     data->windowProgressBar = GTK_WINDOW(gtk_builder_get_object(builder, "progress_bar_window"));
     data->progress_stop_btn = GTK_BUTTON(gtk_builder_get_object(builder, "stop_btn"));
@@ -86,5 +89,7 @@ void setSignal(UIData* data)
     g_signal_connect(data->adjustment3, "value-changed", G_CALLBACK(onAdjMoved3), data);
     g_signal_connect(data->adjustment4, "value-changed", G_CALLBACK(onAdjMoved4), data);
     g_signal_connect(data->adjustment5, "value-changed", G_CALLBACK(onAdjMoved5), data);
+    g_signal_connect(data->adjustment5, "value-changed", G_CALLBACK(onAdjMoved5), data);
+    g_signal_connect(data->adjustment6, "value-changed", G_CALLBACK(onAdjMoved6), data);
     g_signal_connect(data->comboEqualizerMode, "changed", G_CALLBACK(onEqualizerModeChanged), data);
 }

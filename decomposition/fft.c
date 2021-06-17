@@ -28,7 +28,7 @@ void fftCall(UIData * uiData)
                    uiData->equalizerValue,
                    uiData->fft_active,
                    uiData->equalizerMode,
-                   uiData->QVal);
+                   uiData->qFactor);
     // ->fft_active : 0=No   1 = yes with plots   2 = yes without plot
     // ->equalizerMode : 0=No   1 = yes threshold hard     2 = yes treshold soft
 
