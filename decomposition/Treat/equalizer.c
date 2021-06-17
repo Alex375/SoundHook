@@ -10,7 +10,7 @@
 #include <string.h>
 
 
-int equalizer(double* coefs, double* coefsPrint, int n_out, double* sliderValues, double time, double sampleRate, float QVal, int mode) // mode 2 for smooth
+int equalizer(double* coefs, int n_out, double* sliderValues, double time, double sampleRate, float QVal, int mode) // mode 2 for smooth
 {
     double decreaseExposent = 1.17;
 
@@ -44,29 +44,6 @@ int equalizer(double* coefs, double* coefsPrint, int n_out, double* sliderValues
                 coefs[i] = sliderValues[sectionNAverage];
         }
     }
-
-    for (int i = 0; i < 500*(SVlen - 1); ++i) {
-
-        double sectionF = (double) i / 500.0;
-
-        int sectionN = (int) sectionF;
-        int sectionNAverage = (int)(sectionF + 0.5);
-
-        if (mode == 2) {
-            double posInSect = sectionF - sectionN;
-            double powf1 = powf(1 - posInSect, QVal);
-            double powf2 = powf(posInSect, QVal);
-
-            coefsPrint[i] = (sliderValues[sectionN] * powf1 + sliderValues[sectionN + 1] * powf2) / (powf1 + powf2);
-        } else
-        {
-            coefsPrint[i] = sliderValues[sectionNAverage];
-        }
-    }
-
-
-
-
 
     return 0;
 }

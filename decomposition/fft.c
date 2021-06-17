@@ -12,6 +12,7 @@
 #include "fft.h"
 #include "Treat/Treat.h"
 #include "Treat/equalizer.h"
+#include "Treat/previewEqua.h"
 #include </usr/local/include/fftw3.h>
 #include "../GraphTools/Graph.h"
 #include "../file_decoder/wav/Recoder/headers/WavRecoder.h"
@@ -179,14 +180,11 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
     if (equa)
     {
         double * coefs = malloc(sizeof(double) * n_out);
-        double * coefsPrint = malloc(sizeof(double) * 500 * (SVlen - 1));
 
 
         ///////////// temp ////////
-        double QVal = 2;
 
-
-        equalizer(coefs, coefsPrint, (int)n_out, sliderValues, time, (double)sample_rate, QVal, equa);
+        equalizer(coefs, (int)n_out, sliderValues, time, (double)sample_rate, QVal, equa);
 
         //printf("\nCoefs are : \n");
         //for (int i = 0; i < n_out / 100; ++i) {
@@ -201,15 +199,12 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
 
 
         coefs[0] = 0;
-        coefs[n_out - 1] = 200.01;
-        coefsPrint[0] = 0;
-        coefsPrint[500 * (SVlen - 1)] = 200.01;
+        coefs[1] = 200.01;
 
-        grapher(xIn, coefsPrint, (size_t)(500 * (SVlen - 1)), (size_t)(500 * (SVlen - 1)), "coefs.png");
-        grapher(xIn, coefs, (size_t)n_out, (size_t)n_out, "coefsReal.png");
+        //grapher(xIn, coefs, (size_t)n_out, (size_t)n_out, "coefsReal.png");
+        previewEqua(sliderValues, QVal, equa);
 
         free(coefs);
-        free(coefsPrint);
 
     }
 
