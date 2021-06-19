@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
     /////////FREE
 
-    playerCheck(uiData);
+    stopPlay(uiData);
     freeUiData(uiData);
 
 
