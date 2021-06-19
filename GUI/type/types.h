@@ -33,8 +33,8 @@ struct UIData {
     int fft_active;
     int wavlet_active;
     WavData * soundData;
-    GtkImage * soundViewer;
-    GtkImage * equalizerViewer;
+    GtkDrawingArea* soundViewer;
+    GtkDrawingArea* equalizerViewer;
 
     GtkScale* scale1;
     GtkScale* scale2;

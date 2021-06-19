@@ -34,6 +34,7 @@ file(GLOB src_fft_treat decomposition/Treat/*.c)
 file(GLOB src_graph GraphTools/*.c)
 file(GLOB src_wavelet wavlet/*.c)
 file(GLOB src_wavelib wavelib/src/*c)
+file(GLOB src_wavelibaux wavelib/auxiliary/*.c)
 
 
 #set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Werror -pedantic-errors")
@@ -42,7 +43,9 @@ add_executable(testfft ${src_fft} ${src_file_decoder}  ${src_graph} ${src_fft_tr
 TARGET_LINK_LIBRARIES(testfft ${FFTW_LIBRARIES})
 
 
-add_executable(GUI ${src_gui} ${src_file_decoder} ${src_fft} ${src_fft_treat} ${src_graph})
+add_executable(GUI ${src_gui} ${src_file_decoder} ${src_fft} ${src_fft_treat} ${src_graph} ${src_wavelib} ${src_wavelet} ${src_wavelibaux})
+add_executable(TESTGRAPH testGraph.c)
 TARGET_LINK_LIBRARIES(GUI ${GTK_LIBRARIES} ${FFTW_LIBRARIES} -lm ${LIBS})
+TARGET_LINK_LIBRARIES(TESTGRAPH ${GTK_LIBRARIES} ${FFTW_LIBRARIES} -lm ${LIBS})
 
 

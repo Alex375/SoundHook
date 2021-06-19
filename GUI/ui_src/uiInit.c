@@ -22,8 +22,8 @@ UIData* init_data(GtkBuilder* builder)
     data->playButtonNew = GTK_BUTTON(gtk_builder_get_object(builder, "btn_play_new"));
     data->applyBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_apply"));
     data->saveBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_save"));
-    data->soundViewer = GTK_IMAGE(gtk_builder_get_object(builder, "sound_viewer"));
-    data->equalizerViewer = GTK_IMAGE(gtk_builder_get_object(builder, "equalizer_preview"));
+    data->soundViewer = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "sound_preview"));
+    data->equalizerViewer = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "equalizer_preview"));
     data->fft_active = 0;
     data->wavlet_active = 0;
     data->soundData = NULL;
@@ -95,4 +95,6 @@ void setSignal(UIData* data)
     g_signal_connect(data->adjustment5, "value-changed", G_CALLBACK(onAdjMoved5), data);
     g_signal_connect(data->adjustment6, "value-changed", G_CALLBACK(onAdjMoved6), data);
     g_signal_connect(data->comboEqualizerMode, "changed", G_CALLBACK(onEqualizerModeChanged), data);
+    g_signal_connect(data->soundViewer, "draw", G_CALLBACK(onDrawSound), data);
+    g_signal_connect(data->equalizerViewer, "draw", G_CALLBACK(onDrawEqualizer), data);
 }

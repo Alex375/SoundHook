@@ -7,6 +7,6 @@
 
 #define PRECISIONRENDER 100
 
-int previewEqua(double* sliderValues, float QVal, int mode);
+double* previewEqua(double* sliderValues, float QVal, int mode);
 
 #endif //SOUNDHOOK_PREVIEWEQUA_H

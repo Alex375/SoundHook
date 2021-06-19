@@ -271,14 +271,14 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="equalizer_preview">
+          <object class="GtkDrawingArea" id="equalizer_preview">
             <property name="width-request">600</property>
             <property name="height-request">200</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-start">5</property>
-            <property name="margin-end">5</property>
-            <property name="margin-top">5</property>
+            <property name="margin-start">4</property>
+            <property name="margin-end">4</property>
+            <property name="margin-top">4</property>
             <property name="margin-bottom">5</property>
           </object>
           <packing>
@@ -307,19 +307,6 @@
             <property name="can-focus">False</property>
             <property name="column-homogeneous">True</property>
             <child>
-              <object class="GtkImage" id="sound_viewer">
-                <property name="width-request">700</property>
-                <property name="height-request">350</property>
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="pixbuf">../Sound_Hook.jpeg</property>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">1</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkFileChooserButton" id="filechooser">
                 <property name="width-request">100</property>
                 <property name="height-request">40</property>
@@ -336,6 +323,20 @@
                 <property name="top-attach">0</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkDrawingArea" id="sound_preview">
+                <property name="width-request">700</property>
+                <property name="height-request">350</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="margin-start">4</property>
+                <property name="margin-end">9</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="left-attach">0</property>
@@ -347,7 +348,7 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="halign">end</property>
+            <property name="halign">center</property>
             <property name="row-homogeneous">True</property>
             <property name="column-homogeneous">True</property>
             <child>
@@ -355,6 +356,8 @@
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="halign">center</property>
+                <property name="valign">start</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>

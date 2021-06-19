@@ -6,6 +6,6 @@
 #define SOUNDHOOK_EQUALIZERVIEWER_H
 
 #include "../../type/types.h"
-void applyEquaPreview(UIData* data);
+void applyEquaPreview(GtkWidget* widget, cairo_t* cr, UIData* data);
 
 #endif //SOUNDHOOK_EQUALIZERVIEWER_H
