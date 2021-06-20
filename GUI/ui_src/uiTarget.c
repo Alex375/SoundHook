@@ -241,3 +241,15 @@ void onDrawEqualizer(GtkWidget* widget, cairo_t* cr, gpointer user_data)
 {
     applyEquaPreview(widget, cr, (UIData*) user_data);
 }
+
+
+void resetEqua(GtkButton* button, gpointer user_data)
+{
+    UIData* data = (UIData*)user_data;
+    gtk_adjustment_set_value(data->adjustment1, 100);
+    gtk_adjustment_set_value(data->adjustment2, 100);
+    gtk_adjustment_set_value(data->adjustment3, 100);
+    gtk_adjustment_set_value(data->adjustment4, 100);
+    gtk_adjustment_set_value(data->adjustment5, 100);
+    gtk_adjustment_set_value(data->adjustment6, 1);
+}

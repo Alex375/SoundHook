@@ -55,7 +55,7 @@
             <property name="can-focus">False</property>
             <property name="column-homogeneous">True</property>
             <child>
-              <!-- n-columns=6 n-rows=2 -->
+              <!-- n-columns=5 n-rows=2 -->
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -138,20 +138,6 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScale" id="scale6">
-                    <property name="can-focus">True</property>
-                    <property name="margin-end">7</property>
-                    <property name="orientation">vertical</property>
-                    <property name="adjustment">adjustment6</property>
-                    <property name="inverted">True</property>
-                    <property name="round-digits">1</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">5</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
@@ -206,16 +192,6 @@
                     <property name="top-attach">1</property>
                   </packing>
                 </child>
-                <child>
-                  <object class="GtkLabel" id="lbl_qfact">
-                    <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Q factor</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">5</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
               </object>
               <packing>
                 <property name="left-attach">0</property>
@@ -223,20 +199,53 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=2 n-rows=1 -->
+              <!-- n-columns=3 n-rows=1 -->
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="margin-start">9</property>
+                <property name="margin-end">8</property>
                 <property name="margin-top">5</property>
-                <property name="margin-bottom">6</property>
+                <property name="margin-bottom">7</property>
+                <property name="column-homogeneous">True</property>
                 <child>
-                  <object class="GtkLabel">
-                    <property name="width-request">100</property>
-                    <property name="height-request">30</property>
+                  <!-- n-columns=2 n-rows=1 -->
+                  <object class="GtkGrid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Equalizer mode</property>
+                    <property name="row-homogeneous">True</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="width-request">100</property>
+                        <property name="height-request">30</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="margin-start">7</property>
+                        <property name="margin-end">3</property>
+                        <property name="margin-top">4</property>
+                        <property name="margin-bottom">4</property>
+                        <property name="label" translatable="yes">Equalizer mode</property>
+                      </object>
+                      <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkComboBoxText" id="equlizermode">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="active">0</property>
+                        <items>
+                          <item translatable="yes">Hard</item>
+                          <item translatable="yes">Soft</item>
+                        </items>
+                      </object>
+                      <packing>
+                        <property name="left-attach">1</property>
+                        <property name="top-attach">0</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -244,17 +253,65 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkComboBoxText" id="equlizermode">
+                  <!-- n-columns=2 n-rows=1 -->
+                  <object class="GtkGrid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="active">0</property>
-                    <items>
-                      <item translatable="yes">Hard</item>
-                      <item translatable="yes">Soft</item>
-                    </items>
+                    <property name="row-homogeneous">True</property>
+                    <child>
+                      <object class="GtkLabel" id="lbl_qfact">
+                        <property name="can-focus">False</property>
+                        <property name="margin-end">8</property>
+                        <property name="label" translatable="yes">Q factor</property>
+                      </object>
+                      <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkScale" id="scale6">
+                        <property name="width-request">150</property>
+                        <property name="can-focus">True</property>
+                        <property name="adjustment">adjustment6</property>
+                        <property name="round-digits">1</property>
+                      </object>
+                      <packing>
+                        <property name="left-attach">1</property>
+                        <property name="top-attach">0</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <!-- n-columns=1 n-rows=1 -->
+                  <object class="GtkGrid">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="row-homogeneous">True</property>
+                    <property name="column-homogeneous">True</property>
+                    <child>
+                      <object class="GtkButton" id="btn_restet_equa">
+                        <property name="label" translatable="yes">Reset</property>
+                        <property name="width-request">80</property>
+                        <property name="height-request">30</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="halign">end</property>
+                      </object>
+                      <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left-attach">2</property>
                     <property name="top-attach">0</property>
                   </packing>
                 </child>
@@ -349,6 +406,8 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="halign">center</property>
+            <property name="margin-end">4</property>
+            <property name="margin-bottom">3</property>
             <property name="row-homogeneous">True</property>
             <property name="column-homogeneous">True</property>
             <child>
@@ -434,7 +493,6 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="valign">end</property>
-                <property name="row-homogeneous">True</property>
                 <property name="column-homogeneous">True</property>
                 <child>
                   <object class="GtkButton" id="btn_stop">
@@ -447,7 +505,7 @@
                     <property name="margin-start">5</property>
                     <property name="margin-end">5</property>
                     <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
+                    <property name="margin-bottom">26</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>

@@ -19,6 +19,6 @@ void onPlayNew(GtkButton* button, gpointer user_data);
 void onStop(GtkButton* button, gpointer user_data);
 void onDrawSound(GtkWidget* widget, cairo_t* cr, gpointer user_data);
 void onDrawEqualizer(GtkWidget* widget, cairo_t* cr, gpointer user_data);
-
+void resetEqua(GtkButton* button, gpointer user_data);
 
 #endif //SOUNDHOOK_UITARGET_H

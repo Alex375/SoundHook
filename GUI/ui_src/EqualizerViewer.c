@@ -7,7 +7,7 @@
 #include <gtk/gtk.h>
 #include "../type/types.h"
 
-#define EQUALEN 600
+#define EQUALEN 4000
 
 void applyEquaPreview(GtkWidget* widget, cairo_t* cr, UIData* data)
 {
@@ -36,11 +36,7 @@ void applyEquaPreview(GtkWidget* widget, cairo_t* cr, UIData* data)
     cairo_clip_extents (cr, &clip_x1, &clip_y1, &clip_x2, &clip_y2);
     cairo_set_line_width (cr, 2);
 
-    /* Draws x and y axis */
-    cairo_set_source_rgb (cr, 0.3, 0.3, 0.3);
-    cairo_move_to (cr, clip_x1, 0.0);
-    cairo_line_to (cr, clip_x2, 0.0);
-    cairo_stroke (cr);
+
     /* Link each data point */
     if (values == NULL)
         return;
@@ -50,10 +46,9 @@ void applyEquaPreview(GtkWidget* widget, cairo_t* cr, UIData* data)
     {
         if ((i * EQUALEN / clip_x2) >= EQUALEN)
             break;
-        double point = (double)(values[(int)(i * EQUALEN / clip_x2)] - 100) / 101;
-        //g_print("%i->%f\n", (int)(i * EQUALEN / clip_x2), values[(int)(i * EQUALEN / clip_x2)] - 100);
-        point *= clip_y2;
-        cairo_line_to (cr, i, point);
+        double point = (double)(values[(int)(i * EQUALEN / clip_x2)] - 100) / 201;
+        point *= (clip_y2 - clip_y1);
+        cairo_line_to (cr, i, -point);
     }
     /* Draw the curve */
     cairo_set_source_rgba (cr, 0.3, 0.3, 1, 0.8);
