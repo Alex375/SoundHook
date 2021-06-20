@@ -1,16 +1,18 @@
 //
 // Created by Alexandre Josien on 01/04/2021.
 //
+#include </usr/local/include/fftw3.h>
+
 
 #ifndef SOUNDHOOK_TREAT_H
 #define SOUNDHOOK_TREAT_H
 
-#define RATIO_DETECT_SPIKE 2
-#define LEN_DETECT_SPIKE 30
-#define NB_MAX 2
-#define RANGE_DESTROY 30
-#define MIN_F 700
+#define NB_MAX 6
+#define RANGE_DESTROY 20
+#define NUMBER_OF_STAND_DEV 21
 
-void treatOut(double* outMagn, int n_out, double time, int* iSpikes);
+#define MOVING_MEDIAN_WIDTH 100
+
+void treatOut(double* outMagn, int n_out, double time, fftw_complex* out);
 
 #endif //SOUNDHOOK_TREAT_H
