@@ -57,6 +57,7 @@ UIData* init_data(GtkBuilder* builder)
     data->progress_bar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "progress_bar"));
     data->progress_lbl = GTK_LABEL(gtk_builder_get_object(builder, "state_label"));
     data->btnStop = GTK_BUTTON(gtk_builder_get_object(builder, "btn_stop"));
+    data->reset_equa_btn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_restet_equa"));
 
 
     data->file_filter = gtk_file_filter_new();
@@ -97,4 +98,5 @@ void setSignal(UIData* data)
     g_signal_connect(data->comboEqualizerMode, "changed", G_CALLBACK(onEqualizerModeChanged), data);
     g_signal_connect(data->soundViewer, "draw", G_CALLBACK(onDrawSound), data);
     g_signal_connect(data->equalizerViewer, "draw", G_CALLBACK(onDrawEqualizer), data);
+    g_signal_connect(data->reset_equa_btn, "pressed", G_CALLBACK(resetEqua), data);
 }
