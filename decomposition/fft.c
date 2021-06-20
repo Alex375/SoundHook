@@ -131,10 +131,6 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
             max = outMagn[j];
     }
 
-    for (int i = 0; i < n_out; ++i)
-    {
-        outMagn[i] = outMagn[i]/max*1000;
-    }
 
     for (int i = 1990*3; i < 3100*3; ++i)
     {
@@ -158,23 +154,7 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
 
     if (treat)
     {
-        int* iSpikes = malloc(sizeof(int) * NB_MAX);
-        treatOut(outMagn, n_out, time, iSpikes);
-
-        {
-            int i = 0;
-            while (i < NB_MAX && iSpikes[i] != -1)
-            {
-                for (int j = iSpikes[i] - (RANGE_DESTROY * (int)time); j <= iSpikes[i] + (RANGE_DESTROY * (int)time); ++j)
-                {
-                    out[j][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
-                    out[j][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
-                }
-                i++;
-            }
-        }
-
-        free(iSpikes);
+        treatOut(outMagn, n_out, time, out);
     }
 
     if (equa)
