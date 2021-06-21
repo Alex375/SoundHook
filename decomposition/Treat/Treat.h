@@ -8,7 +8,7 @@
 #define SOUNDHOOK_TREAT_H
 
 #define NB_MAX 6
-#define RANGE_DESTROY 20
+#define RANGE_DESTROY 30
 #define NUMBER_OF_STAND_DEV 21
 
 #define MOVING_MEDIAN_WIDTH 100

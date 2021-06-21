@@ -14,7 +14,7 @@
 
 void denoiseSignal(UIData* data)
 {
-    denoise_object denoiseObject = denoise_init((int)data->soundData->addInfo->num_of_sample, 4, "meyer");
+    denoise_object denoiseObject = denoise_init((int)data->soundData->addInfo->num_of_sample, 14, "sym5");
     double* res = malloc(sizeof (double) * data->soundData->addInfo->num_of_sample);
     double* temp = malloc(sizeof (double) * data->soundData->addInfo->num_of_sample);
     for (size_t i = 0; i < data->soundData->addInfo->num_of_sample; i++)

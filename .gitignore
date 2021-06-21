@@ -21,3 +21,10 @@ cmake-build-debug/
 # Galde temp file
 *~
 \#*#
+CMakeFiles/
+Makefile
+CMakeCache.txt
+*.cbp
+*.png
+*.cmake
+Testing/
