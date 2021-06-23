@@ -16,9 +16,9 @@
 #include "../../GraphTools/Graph.h"
 #include <pthread.h>
 #include "headers/SoundPlay.h"
+#include "headers/EqualizerViewer.h"
 
 void wavelet_target(WavData* data);
-
 
 
 
@@ -34,25 +34,8 @@ void on_file_set(GtkFileChooserButton *widget, gpointer data)
         freeWavData(uiData->soundData);
     uiData->soundData = decodeWave(uiData->soundPathOld);
     printWavHeader(uiData->soundData->header);
+    gtk_widget_queue_draw(GTK_WIDGET(uiData->soundViewer));
 
-    long dataSize = uiData->soundData->addInfo->num_of_sample;
-    double * xIn = malloc(sizeof (double) * dataSize);
-    for (size_t i = 0; i < dataSize; i++)
-    {
-        xIn[i] = (double)i;
-    }
-    double * in  = malloc(sizeof (double) * dataSize);
-    if (in == NULL)
-        err(EXIT_FAILURE, "Memory allocation failed");
-    for (int i = 0; i < dataSize; ++i)
-    {
-        in[i] = ((double)uiData->soundData->data[i]) ;
-    }
-    grapherSize(xIn, in, 700, 350, dataSize, dataSize, ".start.png");
-
-    free(xIn);
-    free(in);
-    gtk_image_set_from_file(GTK_IMAGE(uiData->soundViewer), ".start.png");
 }
 
 void on_go_pressed(GtkButton* widget, gpointer data)
@@ -77,31 +60,14 @@ void on_go_pressed(GtkButton* widget, gpointer data)
 
     if (uiData->wavlet_active == 1)
     {
-        wavelet_target(uiData->soundData);
+        denoiseSignal(uiData);
     }
-    long dataSize = uiData->soundData->addInfo->num_of_sample;
-    double * xIn = malloc(sizeof (double) * dataSize);
-    for (size_t i = 0; i < dataSize; i++)
-    {
-        xIn[i] = (double)i;
-    }
-    double * in  = malloc(sizeof (double) * dataSize);
-    if (in == NULL)
-        err(EXIT_FAILURE, "Memory allocation failed");
-    for (int i = 0; i < dataSize; ++i)
-    {
-        in[i] = ((double)uiData->soundData->data[i]) ;
-    }
-    grapherSize(xIn, in, 700, 350, dataSize, dataSize, ".res.png");
-
-    free(xIn);
-    free(in);
-    gtk_image_set_from_file(GTK_IMAGE(uiData->soundViewer), ".res.png");
     wavRecoder(uiData->soundData, "res.wav");
     char* temp = "res.wav";
     char* newpath = malloc(sizeof (char) * 8);
     memcpy(newpath, temp, sizeof (char) * 8);
     uiData->soundPathNew = newpath;
+    gtk_widget_queue_draw(GTK_WIDGET(uiData->soundViewer));
 }
 
 void on_check1(GtkToggleButton *togglebutton, gpointer user_data)
@@ -131,8 +97,10 @@ void on_check3(GtkToggleButton *togglebutton, gpointer user_data)
     UIData* data = (UIData*)user_data;
     gtk_widget_show(GTK_WIDGET(data->windowEqualizer));
     if (gtk_toggle_button_get_active(togglebutton)) {
+
         gtk_widget_set_visible(GTK_WIDGET(data->windowEqualizer), gtk_true());
         data->equalizerMode = 1;
+        gtk_widget_queue_draw(GTK_WIDGET(data->equalizerViewer));
     }
     else {
         gtk_widget_set_visible(GTK_WIDGET(data->windowEqualizer), gtk_false());
@@ -144,7 +112,6 @@ void on_check3(GtkToggleButton *togglebutton, gpointer user_data)
 void wavelet_target(WavData* data)
 {
     //wavelet(data);
-    g_print("Wavelet\n");
 }
 
 void on_save(GtkFileChooserButton *widget, gpointer user_data)
@@ -177,39 +144,112 @@ void onEqualizerModeChanged(GtkComboBox *widget, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
     data->equalizerMode = gtk_combo_box_get_active(widget) + 1;
+    gtk_widget_queue_draw(GTK_WIDGET(data->equalizerViewer));
+    if (data->equalizerMode == 1)
+    {
+        gtk_widget_set_visible(GTK_WIDGET(data->qFactLbl), gtk_false());
+        gtk_widget_set_visible(GTK_WIDGET(data->scale6), gtk_false());
+    }
+    else
+    {
+        gtk_widget_set_visible(GTK_WIDGET(data->qFactLbl), gtk_true());
+        gtk_widget_set_visible(GTK_WIDGET(data->scale6), gtk_true());
+    }
 }
 
 
 void onPlayOld(GtkButton* button, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
-    if (data->playPidOld != NULL)
-    {
-        playerCheck(data);
-        return;
-    }
-    playerCheck(data);
-    if (data->soundPathOld != NULL)
-    {
-        data->playThreadOld = malloc(sizeof (pthread_t));
-        pthread_create(data->playThreadOld, NULL, playSoundOld, user_data);
-    }
+
+    stopPlay(data);
+    playSoundOld(data);
 }
 
 void onPlayNew(GtkButton* button, gpointer user_data)
 {
     UIData* data = (UIData*)user_data;
 
+    stopPlay(data);
+    playSoundNew(data);
+}
 
-    if (data->playPidNew != NULL)
-    {
-        playerCheck(data);
+
+void onStop(GtkButton* button, gpointer user_data)
+{
+    UIData* data = (UIData*)user_data;
+    stopPlay(data);
+}
+
+void onDrawSound(GtkWidget* widget, cairo_t* cr, gpointer user_data)
+{
+    UIData* data = (UIData*)user_data;
+    GdkRectangle da;            /* GtkDrawingArea size */
+    gdouble dx = 0.1, dy = 1.0; /* Pixels between each point */
+    gdouble i, clip_x1 = 0.0, clip_y1 = 0.0, clip_x2 = 0.0, clip_y2 = 0.0;
+    GdkWindow *window = gtk_widget_get_window(widget);
+
+    /* Determine GtkDrawingArea dimensions */
+    gdk_window_get_geometry (window,
+                             &da.x,
+                             &da.y,
+                             &da.width,
+                             &da.height);
+
+    /* Draw on a black background */
+    cairo_set_source_rgb (cr, 0.9, 0.9, 0.9);
+    cairo_paint (cr);
+    /* Change the transformation matrix */
+    cairo_translate (cr, 0, da.height / 2);
+    //cairo_scale (cr, 100, -100);
+
+    /* Determine the data points to calculate (ie. those in the clipping zone */
+    cairo_device_to_user_distance (cr, &dx, &dy);
+    cairo_clip_extents (cr, &clip_x1, &clip_y1, &clip_x2, &clip_y2);
+    cairo_set_line_width (cr, 2);
+
+    /* Draws x and y axis */
+    cairo_set_source_rgb (cr, 0.3, 0.3, 0.3);
+    cairo_move_to (cr, clip_x1, 0.0);
+    cairo_line_to (cr, clip_x2, 0.0);
+    cairo_stroke (cr);
+    cairo_set_line_width (cr, 0.3);
+    cairo_move_to (cr, clip_x1, clip_y2 / 2);
+    cairo_line_to (cr, clip_x2, clip_y2 / 2);
+    cairo_move_to (cr, clip_x1, clip_y1 / 2);
+    cairo_line_to (cr, clip_x2, clip_y1 / 2);
+    cairo_stroke(cr);
+    /* Link each data point */
+    if (data->soundData == NULL)
         return;
-    }
-    playerCheck(data);
-    if (data->soundPathNew != NULL)
+
+    cairo_set_line_width(cr, 1);
+    for (i = clip_x1; i < clip_x2; i += dx)
     {
-        data->playThreadNew = malloc(sizeof (pthread_t));
-        pthread_create(data->playThreadNew, NULL, playSoundNew, user_data);
+        if ((i * data->soundData->addInfo->num_of_sample / clip_x2) >= data->soundData->addInfo->num_of_sample)
+            break;
+        double point = (double)(data->soundData->data[(int)(i * data->soundData->addInfo->num_of_sample / clip_x2)]) / data->soundData->addInfo->high_limit;
+        point *= clip_y2;
+        cairo_line_to (cr, i, point);
     }
+    /* Draw the curve */
+    cairo_set_source_rgba (cr, 0.3, 0.3, 1, 0.8);
+    cairo_stroke (cr);
+}
+
+void onDrawEqualizer(GtkWidget* widget, cairo_t* cr, gpointer user_data)
+{
+    applyEquaPreview(widget, cr, (UIData*) user_data);
+}
+
+
+void resetEqua(GtkButton* button, gpointer user_data)
+{
+    UIData* data = (UIData*)user_data;
+    gtk_adjustment_set_value(data->adjustment1, 100);
+    gtk_adjustment_set_value(data->adjustment2, 100);
+    gtk_adjustment_set_value(data->adjustment3, 100);
+    gtk_adjustment_set_value(data->adjustment4, 100);
+    gtk_adjustment_set_value(data->adjustment5, 100);
+    gtk_adjustment_set_value(data->adjustment6, 1);
 }

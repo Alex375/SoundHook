@@ -1,0 +1,8 @@
+//
+// Created by Alexandre Josien on 18/06/2021.
+//
+
+#ifndef SOUNDHOOK_DRAWSOUNDPREVIEW_H
+#define SOUNDHOOK_DRAWSOUNDPREVIEW_H
+
+#endif //SOUNDHOOK_DRAWSOUNDPREVIEW_H

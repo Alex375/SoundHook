@@ -12,6 +12,7 @@
 #include "fft.h"
 #include "Treat/Treat.h"
 #include "Treat/equalizer.h"
+#include "Treat/previewEqua.h"
 #include </usr/local/include/fftw3.h>
 #include "../GraphTools/Graph.h"
 #include "../file_decoder/wav/Recoder/headers/WavRecoder.h"
@@ -27,7 +28,8 @@ void fftCall(UIData * uiData)
                    uiData->soundData->header->sample_rate,
                    uiData->equalizerValue,
                    uiData->fft_active,
-                   uiData->equalizerMode);
+                   uiData->equalizerMode,
+                   uiData->qFactor);
     // ->fft_active : 0=No   1 = yes with plots   2 = yes without plot
     // ->equalizerMode : 0=No   1 = yes threshold hard     2 = yes treshold soft
 
@@ -63,7 +65,8 @@ void fftCall(UIData * uiData)
                            uiData->soundData->header->sample_rate,
                            uiData->equalizerValue,
                            2,
-                           0);
+                           0,
+                           1);
 
             for (int j = 0; j < len; ++j)
             {
@@ -80,7 +83,7 @@ void fftCall(UIData * uiData)
 }
 
 
-int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat, int equa)
+int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat, int equa, double QVal)
 {
     double time = (double)sizeIn / (double)sample_rate;
 
@@ -128,10 +131,6 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
             max = outMagn[j];
     }
 
-    for (int i = 0; i < n_out; ++i)
-    {
-        outMagn[i] = outMagn[i]/max*1000;
-    }
 
     for (int i = 1990*3; i < 3100*3; ++i)
     {
@@ -155,31 +154,17 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
 
     if (treat)
     {
-        int* iSpikes = malloc(sizeof(int) * NB_MAX);
-        treatOut(outMagn, n_out, time, iSpikes);
-
-        {
-            int i = 0;
-            while (i < NB_MAX && iSpikes[i] != -1)
-            {
-                for (int j = iSpikes[i] - (RANGE_DESTROY * (int)time); j <= iSpikes[i] + (RANGE_DESTROY * (int)time); ++j)
-                {
-                    out[j][0] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][0];
-                    out[j][1] = 0;//out[(int)(maxF - (RANGE_DESTROY * time) - 1)][1];
-                }
-                i++;
-            }
-        }
-
-        free(iSpikes);
+        treatOut(outMagn, n_out, time, out);
     }
 
     if (equa)
     {
         double * coefs = malloc(sizeof(double) * n_out);
-        int min = n_out;
 
-        equalizer(coefs, min, sliderValues, time, (double)sample_rate, equa);
+
+        ///////////// temp ////////
+
+        equalizer(coefs, (int)n_out, sliderValues, time, (double)sample_rate, QVal, equa);
 
         //printf("\nCoefs are : \n");
         //for (int i = 0; i < n_out / 100; ++i) {
@@ -191,6 +176,16 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
             out[i][0] *= coefs[i] / 100;
             out[i][1] *= coefs[i] / 100;
         }
+
+
+        coefs[0] = 0;
+        coefs[1] = 200.01;
+
+        //grapher(xIn, coefs, (size_t)n_out, (size_t)n_out, "coefsReal.png");
+        previewEqua(sliderValues, QVal, equa);
+
+        free(coefs);
+
     }
 
 
@@ -218,6 +213,7 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
     if (equa || treat < 2)
         grapher(xIn, back, (size_t)sizeIn, (size_t)sizeIn, "3.corrected.png");
 
+    free(xIn);
 
     ////////////////VERIF FFT
 
@@ -247,7 +243,7 @@ int* fft(int* data, int sizeIn, int sample_rate, double* sliderValues, int treat
         grapher(xs, outMagn, (size_t)n_out / 2, (size_t)n_out / 2, "4.2nd_fourier_verif.png");
 
 
-
+    free(xs);
 
 
 

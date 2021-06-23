@@ -2,14 +2,14 @@
 // Created by Alexandre Josien on 22/04/2021.
 //
 
-#include "headers/mainUI.h"
+#include "GUI/ui_src/headers/mainUI.h"
 #include <gtk/gtk.h>
-#include "headers/uiTarget.h"
-#include "../type/types.h"
+#include "GUI/ui_src/headers/uiTarget.h"
+#include "GUI/type/types.h"
 #include <err.h>
-#include "headers/uiInit.h"
-#include "headers/uiTarget.h"
-#include "headers/SoundPlay.h"
+#include "GUI/ui_src/headers/uiInit.h"
+#include "GUI/ui_src/headers/uiTarget.h"
+#include "GUI/ui_src/headers/SoundPlay.h"
 
 
 int main(int argc, char** argv)
@@ -19,7 +19,11 @@ int main(int argc, char** argv)
     gtk_init(&argc, &argv);
 
     builder = gtk_builder_new();
-    gtk_builder_add_from_file (builder, "../GUI/ui_glade/window_main.glade", NULL);
+    if (gtk_builder_add_from_file (builder, "GUI/ui_glade/window_main.glade", NULL) == 0)
+    {
+        if(gtk_builder_add_from_file(builder, "../GUI/ui_glade/window_main.glade", NULL) == 0)
+            err(EXIT_FAILURE, "Failed to load glade file launch from SoundHook/ directory.");
+    }
 
     UIData* uiData = init_data(builder);
 
@@ -38,7 +42,7 @@ int main(int argc, char** argv)
 
     /////////FREE
 
-    playerCheck(uiData);
+    stopPlay(uiData);
     freeUiData(uiData);
 
 

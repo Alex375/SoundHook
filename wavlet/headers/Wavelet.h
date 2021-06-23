@@ -4,7 +4,7 @@
 
 #ifndef SOUNDHOOK_WAVELET_H
 #define SOUNDHOOK_WAVELET_H
-#include "../../file_decoder/wav/types/wav.h"
-int wavelet(WavData* wavData);
+#include "../../GUI/type/types.h"
+void denoiseSignal(UIData* data);
 
 #endif //SOUNDHOOK_WAVELET_H

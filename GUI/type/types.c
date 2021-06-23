@@ -14,10 +14,9 @@ void safeFree(void* p)
 
 void freeUiData(UIData* data)
 {
-    safeFree(data->playButtonOld);
-    safeFree(data->playButtonNew);
     safeFree(data->soundPathOld);
     safeFree(data->soundPathNew);
-    safeFree(data->soundData);
+    if (data->soundData != NULL)
+        freeWavData(data->soundData);
     safeFree(data->equalizerValue);
 }

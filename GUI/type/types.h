@@ -14,8 +14,6 @@ struct UIData {
     char* arg1;
     pid_t* playPidOld;
     pid_t* playPidNew;
-    pthread_t* playThreadOld;
-    pthread_t* playThreadNew;
     char* soundPathOld;
     char* soundPathNew;
     GtkWindow *windowMain;
@@ -29,31 +27,40 @@ struct UIData {
     GtkButton* applyBtn;
     GtkButton* saveBtn;
     GtkButton* progress_stop_btn;
+    GtkButton* reset_equa_btn;
     GtkProgressBar* progress_bar;
     GtkLabel* progress_lbl;
     GtkFileFilter* file_filter;
     int fft_active;
     int wavlet_active;
     WavData * soundData;
-    GtkImage * soundViewer;
+    GtkDrawingArea* soundViewer;
+    GtkDrawingArea* equalizerViewer;
 
     GtkScale* scale1;
     GtkScale* scale2;
     GtkScale* scale3;
     GtkScale* scale4;
     GtkScale* scale5;
+    GtkScale* scale6;
     GtkAdjustment* adjustment1;
     GtkAdjustment* adjustment2;
     GtkAdjustment* adjustment3;
     GtkAdjustment* adjustment4;
     GtkAdjustment* adjustment5;
+    GtkAdjustment* adjustment6;
+
+    GtkLabel* qFactLbl;
+
     GtkComboBox* comboEqualizerMode;
     int equalizerMode;
 
     GtkButton* playButtonOld;
     GtkButton* playButtonNew;
+    GtkButton* btnStop;
 
     double* equalizerValue;
+    double qFactor;
 
 
 };

@@ -22,7 +22,6 @@ if(APPLE)
 endif()
 
 
-add_executable(main main.c)
 
 
 
@@ -31,18 +30,22 @@ file(GLOB src_gui GUI/*/*.c)
 
 file(GLOB src_fft decomposition/*.c)
 file(GLOB src_fft_treat decomposition/Treat/*.c)
+file(GLOB src_mediator decomposition/Treat/Mediator/*.c)
 file(GLOB src_graph GraphTools/*.c)
 file(GLOB src_wavelet wavlet/*.c)
 file(GLOB src_wavelib wavelib/src/*c)
+file(GLOB src_wavelibaux wavelib/auxiliary/*.c)
 
 
 #set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -Wextra -Werror -pedantic-errors")
 
-add_executable(testfft ${src_fft} ${src_file_decoder}  ${src_graph} ${src_fft_treat} decomposition/Treat/equalizer.c decomposition/Treat/equalizer.h)
-TARGET_LINK_LIBRARIES(testfft ${FFTW_LIBRARIES})
 
 
-add_executable(GUI ${src_gui} ${src_file_decoder} ${src_fft} ${src_fft_treat} ${src_graph})
-TARGET_LINK_LIBRARIES(GUI ${GTK_LIBRARIES} ${FFTW_LIBRARIES} -lm ${LIBS})
+
+
+
+add_executable(mainUI mainUI.c ${src_gui} ${src_file_decoder} ${src_fft} ${src_mediator} ${src_fft_treat} ${src_graph} ${src_wavelib} ${src_wavelet} ${src_wavelibaux})
+
+TARGET_LINK_LIBRARIES(mainUI ${GTK_LIBRARIES} ${FFTW_LIBRARIES} -lm ${LIBS})
 
 

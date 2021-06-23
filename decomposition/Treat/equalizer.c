@@ -10,9 +10,8 @@
 #include <string.h>
 
 
-int equalizer(double* coefs, int n_out, double* sliderValues, double time, double sampleRate, int mode) // mode 2 for smooth
+int equalizer(double* coefs, int n_out, double* sliderValues, double time, double sampleRate, float QVal, int mode) // mode 2 for smooth
 {
-    int sectionSize = n_out / SVlen;
     double decreaseExposent = 1.17;
 
     double delta = 105* sampleRate / 44000;
@@ -27,17 +26,22 @@ int equalizer(double* coefs, int n_out, double* sliderValues, double time, doubl
         if (sectionF < 0)
             sectionF = 0;
         int sectionN = (int)sectionF;
+        int sectionNAverage = (int)(sectionF + 0.65);
 
-        if (sectionN >= SVlen - 1)
+
+        if (sectionN >= SVlen - 1 || sectionNAverage >= SVlen - 1)
             coefs[i] = sliderValues[SVlen - 1];
         else {
             if (mode == 2)
             {
                 double posInSect = sectionF - sectionN;
-                coefs[i] = (sliderValues[sectionN] * (1 - posInSect) * (1 - posInSect) + sliderValues[sectionN + 1] * posInSect * posInSect) / (posInSect * posInSect + (1 - posInSect) * (1 - posInSect));
+                double powf1 = powf(1 - posInSect, QVal);
+                double powf2 = powf(posInSect, QVal);
+
+                coefs[i] = (sliderValues[sectionN] * powf1 + sliderValues[sectionN + 1] * powf2) / (powf1 + powf2);
             }
             else
-                coefs[i] = sliderValues[sectionN];
+                coefs[i] = sliderValues[sectionNAverage];
         }
     }
 

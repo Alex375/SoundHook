@@ -22,35 +22,42 @@ UIData* init_data(GtkBuilder* builder)
     data->playButtonNew = GTK_BUTTON(gtk_builder_get_object(builder, "btn_play_new"));
     data->applyBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_apply"));
     data->saveBtn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_save"));
-    data->soundViewer = GTK_IMAGE(gtk_builder_get_object(builder, "sound_viewer"));
+    data->soundViewer = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "sound_preview"));
+    data->equalizerViewer = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "equalizer_preview"));
     data->fft_active = 0;
     data->wavlet_active = 0;
     data->soundData = NULL;
 
-    data->windowEqualizer = GTK_WINDOW(gtk_builder_get_object(builder, "window_equalizer"));
+    data->windowEqualizer = GTK_WINDOW(gtk_builder_get_object(builder, "window_equalizer_pre"));
     data->scale1 = GTK_SCALE(gtk_builder_get_object(builder, "scale1"));
     data->scale2 = GTK_SCALE(gtk_builder_get_object(builder, "scale2"));
     data->scale3 = GTK_SCALE(gtk_builder_get_object(builder, "scale3"));
     data->scale4 = GTK_SCALE(gtk_builder_get_object(builder, "scale4"));
     data->scale5 = GTK_SCALE(gtk_builder_get_object(builder, "scale5"));
+    data->scale6 = GTK_SCALE(gtk_builder_get_object(builder, "scale6"));
     data->adjustment1 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment1"));
     data->adjustment2 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment2"));
     data->adjustment3 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment3"));
     data->adjustment4 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment4"));
     data->adjustment5 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment5"));
+    data->adjustment6 = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adjustment6"));
     data->equalizerValue = malloc(sizeof (double) * 5);
     if (data->equalizerValue ==  NULL)
         err(EXIT_FAILURE, "Memory allocation failed");
     for (size_t i = 0; i < 5; i++)
         data->equalizerValue[i] = 100;
+    data->qFactor = 1;
     data->equalizerMode = 1;
     data->comboEqualizerMode = GTK_COMBO_BOX(gtk_builder_get_object(builder, "equlizermode"));
 
+    data->qFactLbl = GTK_LABEL(gtk_builder_get_object(builder, "lbl_qfact"));
 
     data->windowProgressBar = GTK_WINDOW(gtk_builder_get_object(builder, "progress_bar_window"));
     data->progress_stop_btn = GTK_BUTTON(gtk_builder_get_object(builder, "stop_btn"));
     data->progress_bar = GTK_PROGRESS_BAR(gtk_builder_get_object(builder, "progress_bar"));
     data->progress_lbl = GTK_LABEL(gtk_builder_get_object(builder, "state_label"));
+    data->btnStop = GTK_BUTTON(gtk_builder_get_object(builder, "btn_stop"));
+    data->reset_equa_btn = GTK_BUTTON(gtk_builder_get_object(builder, "btn_restet_equa"));
 
 
     data->file_filter = gtk_file_filter_new();
@@ -62,8 +69,7 @@ UIData* init_data(GtkBuilder* builder)
     data->soundPathNew = NULL;
     data->playPidOld = NULL;
     data->playPidNew = NULL;
-    data->playThreadOld = NULL;
-    data->playThreadNew = NULL;
+
 
     return data;
 }
@@ -75,6 +81,7 @@ void setSignal(UIData* data)
     g_signal_connect(data->fileChooserBtn, "file-set", G_CALLBACK(on_file_set), data);
     g_signal_connect(data->playButtonOld, "pressed", G_CALLBACK(onPlayOld), data);
     g_signal_connect(data->playButtonNew, "pressed", G_CALLBACK(onPlayNew), data);
+    g_signal_connect(data->btnStop, "pressed", G_CALLBACK(onStop), data);
     g_signal_connect(data->applyBtn, "pressed", G_CALLBACK(on_go_pressed), data);
     g_signal_connect(data->saveBtn, "pressed", G_CALLBACK(on_save), data);
     g_signal_connect(data->fourrier_check, "toggled", G_CALLBACK(on_check1), data);
@@ -86,5 +93,10 @@ void setSignal(UIData* data)
     g_signal_connect(data->adjustment3, "value-changed", G_CALLBACK(onAdjMoved3), data);
     g_signal_connect(data->adjustment4, "value-changed", G_CALLBACK(onAdjMoved4), data);
     g_signal_connect(data->adjustment5, "value-changed", G_CALLBACK(onAdjMoved5), data);
+    g_signal_connect(data->adjustment5, "value-changed", G_CALLBACK(onAdjMoved5), data);
+    g_signal_connect(data->adjustment6, "value-changed", G_CALLBACK(onAdjMoved6), data);
     g_signal_connect(data->comboEqualizerMode, "changed", G_CALLBACK(onEqualizerModeChanged), data);
+    g_signal_connect(data->soundViewer, "draw", G_CALLBACK(onDrawSound), data);
+    g_signal_connect(data->equalizerViewer, "draw", G_CALLBACK(onDrawEqualizer), data);
+    g_signal_connect(data->reset_equa_btn, "pressed", G_CALLBACK(resetEqua), data);
 }
