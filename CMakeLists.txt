@@ -22,7 +22,6 @@ if(APPLE)
 endif()
 
 
-add_executable(main main.c)
 
 
 
@@ -47,8 +46,6 @@ file(GLOB src_wavelibaux wavelib/auxiliary/*.c)
 
 add_executable(mainUI mainUI.c ${src_gui} ${src_file_decoder} ${src_fft} ${src_mediator} ${src_fft_treat} ${src_graph} ${src_wavelib} ${src_wavelet} ${src_wavelibaux})
 
-add_executable(TESTGRAPH testGraph.c)
 TARGET_LINK_LIBRARIES(mainUI ${GTK_LIBRARIES} ${FFTW_LIBRARIES} -lm ${LIBS})
-TARGET_LINK_LIBRARIES(TESTGRAPH ${GTK_LIBRARIES} ${FFTW_LIBRARIES} -lm ${LIBS})
 
 

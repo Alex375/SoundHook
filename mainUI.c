@@ -19,7 +19,11 @@ int main(int argc, char** argv)
     gtk_init(&argc, &argv);
 
     builder = gtk_builder_new();
-    gtk_builder_add_from_file (builder, "GUI/ui_glade/window_main.glade", NULL);
+    if (gtk_builder_add_from_file (builder, "GUI/ui_glade/window_main.glade", NULL) == 0)
+    {
+        if(gtk_builder_add_from_file(builder, "../GUI/ui_glade/window_main.glade", NULL) == 0)
+            err(EXIT_FAILURE, "Failed to load glade file launch from SoundHook/ directory.");
+    }
 
     UIData* uiData = init_data(builder);
 
