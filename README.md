@@ -36,8 +36,9 @@
 #### Build
 
 ```shell
-% cmake . #A makefile is generated
-% make 	  #Code target is compiled
+% cmake -B build
+% cd build
+% make
 ```
 
 #### Run the project
